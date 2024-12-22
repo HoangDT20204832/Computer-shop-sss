@@ -349,6 +349,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
 
       toast.success(t('Update_order_product_success'))
       handleGetListOrderProducts()
+      fetchAllCountStatusOrder()
       handleCloseEdit()
       dispatch(resetInitialState())
     } else if (isErrorEdit && messageErrorEdit && typeError) {
@@ -368,6 +369,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
     if (isSuccessDelete) {
       toast.success(t('Delete_order_product_success'))
       handleGetListOrderProducts()
+      fetchAllCountStatusOrder()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteOrder()
     } else if (isErrorDelete && messageErrorDelete) {

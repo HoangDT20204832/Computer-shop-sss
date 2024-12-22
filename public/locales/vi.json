@@ -322,6 +322,7 @@
     "Update_comment_success": "Cập nhật bình luận thành công",
     "Update_comment_error": "Cập nhật bình luận thất bại",
     "Delete_comment_success": "Xóa bình luận thành công",
-    "Delete_comment_error": "Xóa bình luận thất bại"
-
+    "Delete_comment_error": "Xóa bình luận thất bại",
+    "Product_details" :"Chi tiết sản phẩm"
+    
 }

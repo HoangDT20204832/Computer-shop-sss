@@ -349,6 +349,7 @@ const ProductListPage: NextPage<TProps> = () => {
         toast.success(t('Update_product_success'))
       }
       handleGetListProducts()
+      fetchAllCountProductStatus()
       handleCloseCreateEdit()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageErrorCreateEdit && typeError) {
@@ -371,6 +372,7 @@ const ProductListPage: NextPage<TProps> = () => {
     if (isSuccessMultipleDelete) {
       toast.success(t('Delete_multiple_product_success'))
       handleGetListProducts()
+      fetchAllCountProductStatus()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteMultipleProduct()
       setSelectedRow([])
@@ -384,6 +386,7 @@ const ProductListPage: NextPage<TProps> = () => {
     if (isSuccessDelete) {
       toast.success(t('Delete_product_success'))
       handleGetListProducts()
+      fetchAllCountProductStatus()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteProduct()
     } else if (isErrorDelete && messageErrorDelete) {

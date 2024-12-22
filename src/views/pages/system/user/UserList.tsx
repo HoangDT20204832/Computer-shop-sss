@@ -418,6 +418,7 @@ const UserListPage: NextPage<TProps> = () => {
         toast.success(t('Update_user_success'))
       }
       handleGetListUsers()
+      fetchAllCountUserType()
       handleCloseCreateEdit()
       dispatch(resetInitialState())
     } else if (isErrorCreateEdit && messageCreateEdit && typeError) {
@@ -444,6 +445,7 @@ const UserListPage: NextPage<TProps> = () => {
     if (isSuccessMultipleDelete) {
       toast.success(t('Delete_multiple_user_success'))
       handleGetListUsers()
+    fetchAllCountUserType()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteMultipleUser()
       setSelectedRow([])
@@ -457,6 +459,7 @@ const UserListPage: NextPage<TProps> = () => {
     if (isSuccessDelete) {
       toast.success(t('Delete_user_success'))
       handleGetListUsers()
+    fetchAllCountUserType()
       dispatch(resetInitialState())
       handleCloseConfirmDeleteUser()
     } else if (isErrorDelete && messageErrorDelete) {

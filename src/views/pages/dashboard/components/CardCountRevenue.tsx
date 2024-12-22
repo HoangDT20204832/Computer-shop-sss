@@ -1,4 +1,3 @@
-
 import { Box, useTheme } from "@mui/material"
 import { TCountProductType, TCountRevenue } from "src/views/pages/dashboard"
 
@@ -32,12 +31,12 @@ const CardCountRevenue = (props: TProps) => {
         {
             label: `${t("Doanh số")}`,
             backgroundColor: [
-                theme.palette.primary.main,
-                theme.palette.info.main,
-                theme.palette.success.main,
                 theme.palette.error.main,
                 theme.palette.warning.main,
                 theme.palette.secondary.main,
+                theme.palette.primary.main,
+                theme.palette.info.main,
+                theme.palette.success.main,
             ],
             data: dataMemo
         }
