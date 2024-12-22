@@ -50,6 +50,9 @@ export const API_ENDPOINT = {
   },
   REPORT: {
     INDEX: `${BASE_URL}/report`
+  },
+  NOTIFICATION: {
+    INDEX: `${BASE_URL}/notifications`
   }
   
 }

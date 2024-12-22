@@ -18,6 +18,7 @@ import UserDropdown from 'src/views/layouts/components/user-dropdown'
 import ModeToggle from './components/mode-toggle'
 import LanguageDropdown from './components/language-dropdown'
 import CartProduct from 'src/views/layouts/components/cart-product'
+import NotificationDropdown from 'src/views/layouts/components/notification-dropdown'
 
 import { useAuth } from 'src/hooks/useAuth'
 import { Button } from '@mui/material'
@@ -110,7 +111,10 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
         <ModeToggle />
         <CartProduct />
         {user ? (
+          <>
+          <NotificationDropdown />
           <UserDropdown />
+          </>
         ) : (
           <Button variant='contained' sx={{ ml: 2, width: 'auto' }} onClick={handleNavigateLogin}>            Sign in
           </Button>
