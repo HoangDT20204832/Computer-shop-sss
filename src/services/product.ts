@@ -79,12 +79,12 @@ export const getDetailsProductPublic = async (id: string) => {
     return error?.response?.data
   }
 }
-export const getDetailsProductPublicBySlug = async (slug: string) => {
+export const getDetailsProductPublicBySlug = async (slug: string, isViewed?: boolean) => {
   try {
 
     // Cần dùng instanceAxios và khai báo là public vì thg này là đặc biệt vì có kèm theo tính năg thích
 
-    const data = { params: { isPublic: true } }
+    const data = { params: { isPublic: true , isViewed} }
     const res = await instanceAxios.get(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT.INDEX}/public/slug/${slug}`, data)
 
     return res.data
