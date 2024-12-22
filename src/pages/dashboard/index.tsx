@@ -1,17 +1,17 @@
-// Next
+// ** Import Next
 import { NextPage } from 'next'
+import { PERMISSIONS } from 'src/configs/permission'
+import DashboardPage from 'src/views/pages/dashboard'
 
-// ** React
-import { ReactNode } from 'react'
-
-// ** Views
-import BlackLayout from 'src/views/layouts/BlackLayout'
-import RegisterPage from 'src/views/pages/register'
+// ** views
 
 type TProps = {}
 
-const Dashborad: NextPage<TProps> = () => {
-  return <> Day la trang Dashboard</>
+const Index: NextPage<TProps> = () => {
+ 
+
+  return <DashboardPage />
 }
 
-export default Dashborad
+Index.permission = [PERMISSIONS.DASHBOARD]
+export default Index
