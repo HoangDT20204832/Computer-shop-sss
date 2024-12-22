@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 // ** Mui
-import { Box, Chip, ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
+import { Box, Chip,  Card, CardContent,ChipProps, Grid, Typography, styled, useTheme } from '@mui/material'
 import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
 
 // ** Redux
@@ -26,6 +26,8 @@ import CustomPagination from 'src/components/custom-pagination'
 import CreateEditUser from 'src/views/pages/system/user/component/CreateEditUser'
 import TableHeader from 'src/components/table-header'
 import CustomSelect from 'src/components/custom-select'
+import Icon from 'src/components/Icon'
+
 
 // ** Others
 import toast from 'react-hot-toast'
@@ -40,8 +42,11 @@ import { usePermission } from 'src/hooks/usePermission'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 import { PERMISSIONS } from 'src/configs/permission'
 import { getAllRoles } from 'src/services/role'
-import { OBJECT_STATUS_USER } from 'src/configs/user'
+import { CONFIG_USER_TYPE, OBJECT_STATUS_USER, OBJECT_TYPE_USER } from 'src/configs/user'
+import { getCountUserType } from 'src/services/report'
 import { getAllCities } from 'src/services/city'
+
+import CardCountUser from 'src/views/pages/system/user/component/CardCountUser'
 
 type TProps = {}
 type TSelectedRow = { id: string; role: { name: string; permissions: string[] } }
@@ -66,6 +71,21 @@ const UserListPage: NextPage<TProps> = () => {
   // ** Translate
   const { t } = useTranslation()
 
+  const mapUserType = {
+    1: {
+      title: t("Facebook"),
+      icon: "logos:facebook",
+    },
+    2: {
+      title: t("Google"),
+      icon: "flat-color-icons:google",
+    },
+    3: {
+      title: t("Email"),
+      icon: "logos:google-gmail",
+      iconSize: 18
+    },
+  }
   // State
   // truyền thêm id vào để phân biệt nếu id ko phải chuỗi rỗng thì nghĩa là mở Modal Edit, ngược lại thì là mở Modal Create
   const [openCreateEdit, setOpenCreateEdit] = useState({
@@ -88,13 +108,19 @@ const UserListPage: NextPage<TProps> = () => {
   const [roleSelected, setRoleSelected] = useState<string[]>([])
   const [citySelected, setCitySelected] = useState<string[]>([])
   const [statusSelected, setStatusSelected] = useState<string[]>([])
+  const [typeSelected, setTypeSelected] = useState<string[]>([])
 
   const [loading, setLoading] = useState(false)
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION[0])
   const [page, setPage] = useState(1)
   const [selectedRow, setSelectedRow] = useState<TSelectedRow[]>([])
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
+  const [countUserType, setCountUserType] = useState<{
+    data: Record<number, number>,
+    totalUser: number
+  }>({} as any)
   const CONSTANT_STATUS_USER = OBJECT_STATUS_USER()
+  const CONSTANT_USER_TYPE = OBJECT_TYPE_USER()
 
   // ** Hooks
     // check permission xem, thêm, xoá, sửa của User  trên từng trang(trang UserList)
@@ -253,6 +279,23 @@ const UserListPage: NextPage<TProps> = () => {
       }
     },
     {
+      field: 'userType',
+      headerName: t('User Type'),
+      minWidth: 120,
+      maxWidth: 120,
+      renderCell: params => {
+        const { row } = params
+
+        return (
+          <>{row.userType && (
+            <Box>
+              <Icon icon={(mapUserType as any)[row.userType]?.icon} fontSize={(mapUserType as any)[row.userType]?.iconSize || 24} />
+            </Box>
+          )}</>
+        )
+      }
+    },
+    {
       field: 'action',
       headerName: t('Actions'),
       minWidth: 150,
@@ -315,6 +358,22 @@ const UserListPage: NextPage<TProps> = () => {
       })
   }
 
+  const fetchAllCountUserType = async () => {
+    setLoading(true)
+    await getCountUserType().then((res) => {
+      const data = res?.data
+      setLoading(false)
+      setCountUserType({
+        data: data?.data,
+        totalUser: data?.total
+      })
+    }).catch(e => {
+      setLoading(false)
+    })
+  }
+  console.log("check", {countUserType})
+
+
   const fetchAllCities = async () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
@@ -341,12 +400,13 @@ const UserListPage: NextPage<TProps> = () => {
 
   //khi filter theo Role, Status  (roleSelected (id của role)) thay đổi) thì set lại filterBy
   useEffect(() => {
-    setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected })
-  }, [roleSelected, statusSelected, citySelected])
+    setFilterBy({ roleId: roleSelected, status: statusSelected, cityId: citySelected, userType: typeSelected })
+  }, [roleSelected, statusSelected, citySelected, typeSelected])
 
   useEffect(() => {
     fetchAllRoles()
     fetchAllCities()
+    fetchAllCountUserType()
   }, [])
 
  // xử lý thông báo khi tạo hoặc update thành công, thất bại
@@ -405,6 +465,26 @@ const UserListPage: NextPage<TProps> = () => {
     }
   }, [isSuccessDelete, isErrorDelete, messageErrorDelete])
 
+  const dataListUser = [
+    {
+      "icon": "tabler:user",
+      userType: 4
+    },
+    {
+      "icon": "logos:facebook",
+      userType: CONFIG_USER_TYPE.FACEBOOK,
+    },
+    {
+      userType: CONFIG_USER_TYPE.GOOGLE,
+      "icon": "flat-color-icons:google",
+    },
+    {
+      "icon": "logos:google-gmail",
+      iconSize: "18",
+      userType: CONFIG_USER_TYPE.DEFAULT,
+    }
+  ]
+
   return (
     <>
       {loading && <Spinner />}
@@ -426,6 +506,17 @@ const UserListPage: NextPage<TProps> = () => {
       />
       <CreateEditUser open={openCreateEdit.open} onClose={handleCloseCreateEdit} idUser={openCreateEdit.id} />
       {isLoading && <Spinner />}
+      <Box sx={{ backgroundColor: "inherit", width: '100%', mb: 4 }}>
+        <Grid container spacing={6} sx={{ height: '100%' }}>
+          {dataListUser?.map((item: any, index: number) => {
+            return (
+              <Grid item xs={12} md={3} sm={6} key={index}>
+                <CardCountUser {...item} countUserType={countUserType} />
+              </Grid>
+            )
+          })}
+        </Grid>
+      </Box>
       <Box
         sx={{
           backgroundColor: theme.palette.background.paper,
@@ -433,7 +524,8 @@ const UserListPage: NextPage<TProps> = () => {
           alignItems: 'center',
           padding: '20px',
           height: '100%',
-          width: '100%'
+          width: '100%',
+          borderRadius: '15px'
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
@@ -478,6 +570,19 @@ const UserListPage: NextPage<TProps> = () => {
                   options={Object.values(CONSTANT_STATUS_USER)}
                   value={statusSelected}
                   placeholder={t('Status')}
+                />
+              </Box>
+
+              <Box sx={{ width: '200px' }}>
+                <CustomSelect
+                  fullWidth
+                  onChange={e => {
+                    setTypeSelected(e.target.value as string[])
+                  }}
+                  multiple
+                  options={Object.values(CONSTANT_USER_TYPE)}
+                  value={typeSelected}
+                  placeholder={t('User type')}
                 />
               </Box>
 

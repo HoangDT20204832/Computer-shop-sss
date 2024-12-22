@@ -334,7 +334,8 @@ const RoleListPage: NextPage<TProps> = () => {
           display: 'flex',
           alignItems: 'center',
           padding: '20px',
-          height: '100%'
+          height: '100%',
+          borderRadius:'15px'
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
