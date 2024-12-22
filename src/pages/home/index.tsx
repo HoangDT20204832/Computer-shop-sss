@@ -1,12 +1,40 @@
 'use client'
+import { getMessaging, onMessage } from 'firebase/messaging'
 import Head from 'next/head'
-import { ReactNode } from 'react'
+import { ReactNode, useEffect } from 'react'
+import firebaseApp from 'src/configs/firebase'
+import useFcmToken from 'src/hooks/useFcmToken'
+
 // layouts
 import LayoutNotApp from 'src/views/layouts/LayoutNotApp'
+
 // ** Pages
 import HomePage from 'src/views/pages/home'
 
 export default function Home() {
+
+  const { fcmToken } = useFcmToken();
+  // Use the token as needed
+  console.log('FCM token:', fcmToken);
+
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      const messaging = getMessaging(firebaseApp);
+      const unsubscribe = onMessage(messaging, (payload) => {
+        console.log('Foreground push notification received:', payload);
+   
+      });
+
+      return () => {
+        unsubscribe(); // Unsubscribe from the onMessage event
+      };
+    }
+  }, []);
+
+
+
   return (
     <>
       <Head>
@@ -19,6 +47,7 @@ export default function Home() {
     </>
   )
 }
+
 Home.getLayout = (page: ReactNode) => <LayoutNotApp>{page}</LayoutNotApp>
 Home.guestGuard = false
 Home.authGuard = false
