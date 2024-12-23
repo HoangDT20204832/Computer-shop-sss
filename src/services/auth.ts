@@ -49,6 +49,12 @@ export const loginAuthFacebook = async (data: {idToken: string, deviceToken?:str
   return res.data
 }
 
+export const updateDeviceToken = async (data: {deviceToken:string}) => {
+  const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/update-device`, data)
+  
+  return res.data
+}
+
 export const registerAuth = async (data: TRegisterAuth) => {
   try {
     const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register`, data)
