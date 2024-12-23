@@ -496,7 +496,7 @@ const OrderProductListPage: NextPage<TProps> = () => {
               pagination: PaginationComponent
             }}
             disableColumnFilter
-            disableColumnMenu
+            // disableColumnMenu
           />
         </Grid>
       </Box>

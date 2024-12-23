@@ -642,7 +642,7 @@ const UserListPage: NextPage<TProps> = () => {
               setSelectedRow(formatData)
             }}
             disableColumnFilter
-            disableColumnMenu //ẩn tuỳ chọn menu ở các cột
+            // disableColumnMenu //ẩn tuỳ chọn menu ở các cột
             // hideFooter //ẩn thanh paginate
           />
         </Grid>

@@ -31,7 +31,9 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
 
   return (
     <Box
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', paddingLeft: '8px' }}
+      sx={{ display: 'flex', alignItems: 'center', 
+        justifyContent: isHideShowed ? 'center' : 'space-between'
+        , width: '100%', paddingLeft: '8px' }}
     >
       {!isHideShowed ? (
         <>
@@ -54,9 +56,16 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
         <Box></Box>
       )}
       <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
-        <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+        {/* <Box sx={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
           <span>{t('Số dòng hiển thị')}</span>
-          <Select
+         
+        </Box> */}
+        <StylePagination
+          onChange={(e, page: number) => {
+            onChangePagination(page, pageSize)
+          }}
+          color='primary' page={page} count={Math.ceil(rowLength / pageSize)} {...rests} />
+           <Select
             size='small'
             sx={{
               width: '80px',
@@ -75,12 +84,6 @@ const CustomPagination = React.forwardRef((props: TProps, ref: Ref<any>) => {
               )
             })}
           </Select>
-        </Box>
-        <StylePagination
-          onChange={(e, page: number) => {
-            onChangePagination(page, pageSize)
-          }}
-          color='primary' page={page} count={Math.ceil(rowLength / pageSize)} {...rests} />
       </Box>
     </Box>
   )

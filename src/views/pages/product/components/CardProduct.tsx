@@ -278,7 +278,32 @@ const CardProduct = (props: TCardProduct) => {
               {!!item.totalReviews ? <b>{item.totalReviews}</b> : <span>{t('not_review')}</span>}
             </Typography>
           </Box>
-          <IconButton
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+            {!!item?.likedBy?.length && (
+              <Typography
+                variant='h6'
+                sx={{
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  color: theme.palette.primary.main,
+                }}
+              >
+                {item?.likedBy?.length}
+              </Typography>
+            )}
+            <IconButton
+              onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}
+            >
+              {user && item?.likedBy?.includes(user._id) ? (
+                <Icon icon='mdi:heart' style={{ color: theme.palette.error.main }} />
+              ) : (
+                <Icon icon='tabler:heart' style={{ color: theme.palette.error.main }} />
+              )}
+            </IconButton>
+          </Box>
+
+          {/* <IconButton
             onClick={() => handleToggleLikeProduct(item._id, Boolean(user && item?.likedBy?.includes(user._id)))}
           >
             {user && item?.likedBy?.includes(user._id) ? (
@@ -286,7 +311,7 @@ const CardProduct = (props: TCardProduct) => {
             ) : (
               <Icon icon='tabler:heart' style={{ color: theme.palette.primary.main }} />
             )}
-          </IconButton>
+          </IconButton> */}
         </Box>
       </CardContent>
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '0 12px 10px', gap: 2 }}>

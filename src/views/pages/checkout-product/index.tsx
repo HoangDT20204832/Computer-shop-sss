@@ -60,6 +60,7 @@ import { PAYMENT_TYPES } from 'src/configs/payment'
 
 type TProps = {}
 
+//trang hiển thị để đặt hàng
 const CheckoutProductPage: NextPage<TProps> = () => {
   // State
   const [optionPayments, setOptionPayments] = useState<{ label: string; value: string, type: string }[]>([])
@@ -177,6 +178,13 @@ const CheckoutProductPage: NextPage<TProps> = () => {
 
   const handleOrderProduct = () => {
     const totalPrice = memoPriceShipping + Number(memoQueryProduct.totalPrice)
+    //nếu người dùng chauw nhập địa chỉ giao hàng mà click vào nút mua hàng
+    //thì sẽ bật lên cửa sổ để nhập địa chỉ
+    if(!memoAddressDefault) {
+      setOpenAddress(true)
+      
+      return
+    }
     dispatch(
       createOrderProductAsync({
         orderItems: memoQueryProduct.productsSelected as TItemOrderProduct[],

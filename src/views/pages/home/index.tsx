@@ -38,6 +38,7 @@ import { OBJECT_TYPE_ERROR_PRODUCT } from 'src/configs/error'
 import ImageSlider from 'src/components/image-slider'
 import { useRouter } from 'next/router'
 import CardSkeleton from '../product/components/CardSkeleton'
+import CustomSelect from 'src/components/custom-select'
 
 type TProps = {}
 
@@ -251,6 +252,34 @@ const HomePage: NextPage<TProps> = () => {
           })}
         </StyledTabs>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+        <Box sx={{ width: '300px' }}>
+              <CustomSelect
+                fullWidth
+                onChange={(e) => {
+                  setSortBy(e.target.value as string)
+                }}
+                value={sortBy}
+                options={[
+                  {
+                    label: t("Sort_best_sold"),
+                    value: "sold desc"
+                  },
+                  {
+                    label: t("Sort_new_create"),
+                    value: "createdAt desc"
+                  },  
+                  // {
+                  //   label: t("Sort_high_view"),
+                  //   value: "views desc"
+                  // },
+                  {
+                    label: t("Sort_high_like"),
+                    value: "totalLikes desc"
+                  }
+                ]}
+                placeholder={t('Sort_by')}
+              />
+            </Box>
           <Box sx={{ width: '300px' }}>
             <InputSearch
               placeholder={t('Search_name_product')}
