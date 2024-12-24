@@ -39,6 +39,7 @@ import ImageSlider from 'src/components/image-slider'
 import { useRouter } from 'next/router'
 import CardSkeleton from '../product/components/CardSkeleton'
 import CustomSelect from 'src/components/custom-select'
+import ImageSearchBar from 'src/components/image-upload'
 
 type TProps = {}
 
@@ -72,8 +73,11 @@ const HomePage: NextPage<TProps> = () => {
     data: [],
     total: 0
   })
-
-  const firstRender = useRef<boolean>(false)
+  const [category, setCategory] = useState<string>(''); // State để quản lý category
+  const [productTypeId, setProductTypeId] = useState<string>(''); 
+  const [nameProductType, setNameProductType] = useState<string>(''); 
+  const [dataProductType, setDataProductType] = useState<any[]>([]); 
+  // const firstRender = useRef<boolean>(false)
 
   // ** Redux
   const {
@@ -95,7 +99,9 @@ const HomePage: NextPage<TProps> = () => {
   const handleGetListProducts = async () => {
     setLoading(true)
     const query = {
-      params: { limit: pageSize, page: page, search: searchBy, order: sortBy }
+      params: {
+        limit: pageSize, page: page, search: searchBy, order: sortBy, productType: productTypeId
+      }
     }
     await getAllProductsPublic(query).then(res => {
       if (res?.data) {
@@ -117,15 +123,15 @@ const HomePage: NextPage<TProps> = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     // setProductTypeSelected(newValue)
     // Tìm ID của loại sản phẩm dựa trên `newValue`()(slug)
-    const selectedType = optionTypes.find((type) => type.value === newValue);
+    // const selectedType = optionTypes.find((type) => type.value === newValue);
 
-    if (selectedType) {
-      // Điều hướng tới đường dẫn `/product-type/[label]` và kèm ID dưới dạng query
-      router.push({
-        pathname: `/product-type/${newValue}`, // Đường dẫn chính
-        // query: { id: selectedType.id },    // Gửi kèm ID qua query
-      });
-    }
+    // if (selectedType) {
+    // Điều hướng tới đường dẫn `/product-type/[label]` và kèm ID dưới dạng query
+    router.push({
+      pathname: `/product-type/${newValue}`, // Đường dẫn chính
+      // query: { id: selectedType.id },    // Gửi kèm ID qua query
+    });
+    // }
 
   }
 
@@ -143,10 +149,10 @@ const HomePage: NextPage<TProps> = () => {
   //   }
   // }
 
-  const handleResetFilter = () => {
-    setLocationSelected('')
-    setReviewSelected('')
-  }
+  // const handleResetFilter = () => {
+  //   setLocationSelected('')
+  //   setReviewSelected('')
+  // }
 
   // ** fetch api
   const fetchAllTypes = async () => {
@@ -155,10 +161,11 @@ const HomePage: NextPage<TProps> = () => {
       .then(res => {
         const data = res?.data.productTypes
         console.log("hmmm", data)
+        setDataProductType(data)
         if (data) {
           setOptionTypes(data?.map((item: { name: string; slug: string, _id: string }) => ({ label: item.name, value: item.slug, id: item._id })))
           // setProductTypeSelected(data?.[0]?._id)
-          firstRender.current = true
+          // firstRender.current = true
         }
         setLoading(false)
       })
@@ -190,11 +197,22 @@ const HomePage: NextPage<TProps> = () => {
   }, [])
 
   useEffect(() => {
-    if (firstRender.current) {
-      handleGetListProducts()
-    }
+    const selectedType = dataProductType.find((item) => item.slug === category)
+    // console.log("seee", selectedType)
+    setProductTypeId(selectedType?._id)
+    setNameProductType(selectedType?.name)
+
+  }, [category])
+
+  console.log("type", productTypeId)
+
+  useEffect(() => {
+    // if (firstRender.current) {
+
+    handleGetListProducts()
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize, filterBy])
+  }, [sortBy, searchBy, page, pageSize, filterBy, productTypeId])
 
   // useEffect(() => {
   //   if (firstRender.current) {
@@ -246,40 +264,56 @@ const HomePage: NextPage<TProps> = () => {
         }}
       >
         <ImageSlider /> {/* Slider hình ảnh */}
+
         <StyledTabs value={productTypeSelected} onChange={handleChange} aria-label='wrapped label tabs example'>
           {optionTypes.map(opt => {
-            return <Tab key={opt.value} value={opt.value} label={opt.label} />
+            return <Tab key={opt.value} value={opt.value} label={t(opt.label)} />
           })}
         </StyledTabs>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-        <Box sx={{ width: '300px' }}>
-              <CustomSelect
-                fullWidth
-                onChange={(e) => {
-                  setSortBy(e.target.value as string)
-                }}
-                value={sortBy}
-                options={[
-                  {
-                    label: t("Sort_best_sold"),
-                    value: "sold desc"
-                  },
-                  {
-                    label: t("Sort_new_create"),
-                    value: "createdAt desc"
-                  },  
-                  // {
-                  //   label: t("Sort_high_view"),
-                  //   value: "views desc"
-                  // },
-                  {
-                    label: t("Sort_high_like"),
-                    value: "totalLikes desc"
-                  }
-                ]}
-                placeholder={t('Sort_by')}
-              />
+
+        <Box sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+          {/* Component tìm kiếm bằng ảnh */}
+          <ImageSearchBar setCategory={setCategory} />
+
+          {/* Hiển thị category */}
+          {category && (
+            <Box sx={{ margin: '10px auto 0px', textAlign: "center" , display:"flex", alignItems:"center"}}>
+              <Typography fontSize={20} fontWeight={700} >{t('Product_Type')}:</Typography>
+              <Typography fontSize={20} fontWeight={700} sx={{color:theme.palette.primary.main}}>{t(nameProductType) || t('Unknown')}</Typography>
             </Box>
+          )}
+
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+          <Box sx={{ width: '300px' }}>
+            <CustomSelect
+              fullWidth
+              onChange={(e) => {
+                setSortBy(e.target.value as string)
+              }}
+              value={sortBy}
+              options={[
+                {
+                  label: t("Sort_best_sold"),
+                  value: "sold desc"
+                },
+                {
+                  label: t("Sort_new_create"),
+                  value: "createdAt desc"
+                },
+                // {
+                //   label: t("Sort_high_view"),
+                //   value: "views desc"
+                // },
+                {
+                  label: t("Sort_high_like"),
+                  value: "totalLikes desc"
+                }
+              ]}
+              placeholder={t('Sort_by')}
+            />
+          </Box>
           <Box sx={{ width: '300px' }}>
             <InputSearch
               placeholder={t('Search_name_product')}

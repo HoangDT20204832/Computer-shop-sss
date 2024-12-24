@@ -327,5 +327,12 @@
     "Payment_vn_pay_failed": "Payment VNPay failed",
     "ratings": "ratings",
     "comments": "comments",
-    "Product_details": "Details product"
+    "Product_details": "Details product",
+    "Laptop": "Laptop",
+    "PC":"PC",
+    "Monitor":"Monitor",
+    "Accessory":"Accessory",
+     "Product_Type": "Product Type",
+    "Unknown": "Unknown"
+
   }

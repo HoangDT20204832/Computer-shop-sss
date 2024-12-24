@@ -53,6 +53,9 @@ export const API_ENDPOINT = {
   },
   NOTIFICATION: {
     INDEX: `${BASE_URL}/notifications`
+  },
+  SEARCH_IMAGE :{
+    INDEX : `${BASE_URL}/image/classify`
   }
   
 }

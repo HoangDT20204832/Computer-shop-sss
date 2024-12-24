@@ -61,7 +61,7 @@ const ProductTypePage: NextPage<TProps> = () => {
 
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
   const [nameProductType, setNameProductType] = useState('')
-  const [productTypeId, setproductTypeId] = useState('')
+  const [productTypeIded, setproductTypeIded] = useState('')
 
   const [pageSize, setPageSize] = useState(PAGE_SIZE_OPTION3[0])
   const [page, setPage] = useState(1)
@@ -100,18 +100,21 @@ const ProductTypePage: NextPage<TProps> = () => {
   const handleGetListProducts = async () => {
     setLoading(true)
     const query = {
-      params: { limit: pageSize, page: page, search: searchBy, order: sortBy, productType: productTypeId
+      params: { limit: pageSize, page: page, search: searchBy, order: sortBy, productType: productTypeIded
         , ...formatFilter(filterBy) }
     }
-    await getAllProductsPublic(query).then(res => {
-      if (res?.data) {
-        setLoading(false)
-        setProductsPublic({
-          data: res?.data?.products,
-          total: res?.data?.totalCount
-        })
-      }
-    })
+    if(productTypeIded){
+      await getAllProductsPublic(query).then(res => {
+        if (res?.data) {
+          setLoading(false)
+          setProductsPublic({
+            data: res?.data?.products,
+            total: res?.data?.totalCount
+          })
+        }
+      })
+    }
+
   }
 
   const handleOnchangePagination = (page: number, pageSize: number) => {
@@ -147,7 +150,7 @@ const ProductTypePage: NextPage<TProps> = () => {
           const typeProduct = data?.find((item:{ name: string; slug: string, _id:string }) => item.slug === productTypeSlug)
           console.log("nameProductType",typeProduct)
           setNameProductType(typeProduct?.name)
-          setproductTypeId(typeProduct?._id)
+          setproductTypeIded(typeProduct?._id)
           // setOptionTypes(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
           // setProductTypeSelected(data?.[0]?._id)
           // firstRender.current = true
@@ -177,11 +180,14 @@ const ProductTypePage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    handleGetListProducts()
     fetchAllCities()
     fetchAllTypes()
-
+    // handleGetListProducts()
   }, [])
+
+  useEffect(()=>{
+    handleGetListProducts()
+  },[productTypeIded])
 
 
   useEffect(() => {

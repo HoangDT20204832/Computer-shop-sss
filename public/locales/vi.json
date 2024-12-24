@@ -351,5 +351,11 @@
     "Payment_vn_pay_failed": "Thanh toán VNPay thất bại",
     "ratings": "đánh giá",
     "comments": "bình luận",
-    "Product_details": "Chi tiết sản phẩm"
+    "Product_details": "Chi tiết sản phẩm",
+    "Laptop": "Máy tính",
+    "PC":"PC",
+    "Monitor":"Màn hình",
+    "Accessory":"Linh kiện máy tính",
+    "Product_Type": "Loại sản phẩm",
+    "Unknown": "Không xác định"
   }
