@@ -4,7 +4,7 @@ import { NextPage } from 'next'
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 // ** Mui
-import { Box, Grid, Typography, useTheme } from '@mui/material'
+import { Box, Button, Grid, Typography, useTheme } from '@mui/material'
 import { GridColDef, GridRowSelectionModel, GridSortModel } from '@mui/x-data-grid'
 // ** Redux
 import { useDispatch, useSelector } from 'react-redux'
@@ -36,6 +36,7 @@ import { usePermission } from 'src/hooks/usePermission'
 import { PAGE_SIZE_OPTION } from 'src/configs/gridConfig'
 // ** Utils
 import { formatDate } from 'src/utils/date'
+import SubcategoryModal from './component/SubcategoryModal'
 
 type TProps = {}
 const ProductTypeListPage: NextPage<TProps> = () => {
@@ -64,6 +65,23 @@ const ProductTypeListPage: NextPage<TProps> = () => {
     'UPDATE',
     'DELETE'
   ])
+
+  //thêm////////////////////////
+  const [openSubcategoryModal, setOpenSubcategoryModal] = useState(false)
+  const [selectedProductType, setSelectedProductType] = useState<{ id: string; name: string } | null>(null)
+
+  const handleOpenSubcategoryModal = (productType: { id: string; name: string }) => {
+    console.log("hj", productType)
+    setSelectedProductType(productType)
+    setOpenSubcategoryModal(true)
+  }
+
+  const handleCloseSubcategoryModal = () => {
+    setOpenSubcategoryModal(false)
+    setSelectedProductType(null)
+  }
+  /////////////////////////////////
+
   /// ** redux
   const dispatch: AppDispatch = useDispatch()
   const {
@@ -199,6 +217,20 @@ const ProductTypeListPage: NextPage<TProps> = () => {
           </>
         )
       }
+    },
+    {
+      field: 'manageSubcategory',
+      headerName: 'Quản lý Subcategory',
+      flex: 1,
+      renderCell: params => (
+        
+        <Button
+          variant="outlined"
+          onClick={() => handleOpenSubcategoryModal({ id: String(params.id), name: params.row.name })}
+        >
+          Quản lý
+        </Button>
+      )
     }
   ]
   const PaginationComponent = () => {
@@ -298,7 +330,7 @@ const ProductTypeListPage: NextPage<TProps> = () => {
           padding: '20px',
           height: '100%',
           width: '100%',
-          borderRadius:'15px'
+          borderRadius: '15px'
         }}
       >
         <Grid container sx={{ height: '100%', width: '100%' }}>
@@ -352,8 +384,17 @@ const ProductTypeListPage: NextPage<TProps> = () => {
               setSelectedRow(row as string[])
             }}
             disableColumnFilter
-            // disableColumnMenu
+          // disableColumnMenu
           />
+
+          {openSubcategoryModal && selectedProductType && (
+            <SubcategoryModal
+              open={openSubcategoryModal}
+              onClose={handleCloseSubcategoryModal}
+              productTypeId={selectedProductType.id}
+              productTypeName={selectedProductType.name}
+            />
+          )}
         </Grid>
       </Box>
     </>

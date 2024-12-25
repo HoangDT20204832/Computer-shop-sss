@@ -285,7 +285,7 @@ const HomePage: NextPage<TProps> = () => {
 
         </Box>
 
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: "space-between" }}>
           <Box sx={{ width: '300px' }}>
             <CustomSelect
               fullWidth

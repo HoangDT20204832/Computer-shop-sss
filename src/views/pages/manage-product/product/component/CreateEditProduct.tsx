@@ -47,6 +47,7 @@ import { EditorState, convertToRaw } from 'draft-js'
 import draftToHtml from 'draftjs-to-html'
 import { getDetailsProduct } from 'src/services/product'
 import { getAllCities } from 'src/services/city'
+import { API_ENDPOINT } from 'src/configs/api'
 
 interface TCreateEditProduct {
   open: boolean
@@ -65,7 +66,8 @@ type TDefaultValue = {
   status: number
   discountEndDate: Date | null
   discountStartDate: Date | null
-  location: string
+  location: string,
+  subcategory: string
 }
 
 const CreateEditProduct = (props: TCreateEditProduct) => {
@@ -75,6 +77,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
   const [optionTypes, setOptionTypes] = useState<{ label: string; value: string }[]>([])
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
+  // State để lưu danh sách subcategories
+  const [optionSubcategories, setOptionSubcategories] = useState<{ label: string; value: string }[]>([])
   // ** Props
   const { open, onClose, idProduct } = props
 
@@ -89,6 +93,9 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     name: yup.string().required(t('Required_field')),
     slug: yup.string().required(t('Required_field')),
     type: yup.string().required(t('Required_field')),
+    //thêm
+    subcategory: yup.string().required(t('Required_field')), // Thêm validation cho subcategory
+//
     location: yup.string().required(t('Required_field')),
     countInStock: yup
       .string()
@@ -170,7 +177,8 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     price: '',
     status: 0,
     discountEndDate: null,
-    discountStartDate: null
+    discountStartDate: null,
+    subcategory:''
   }
 
   const {
@@ -201,6 +209,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountStartDate: data?.discountStartDate || null,
             image: imageProduct,
             type: data.type,
+            subcategory: data.subcategory, // Gửi subcategory lên backend
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
             status: data.status ? 1 : 0,
@@ -219,6 +228,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
             discountStartDate: data.discountStartDate || null,
             image: imageProduct,
             type: data.type,
+            subcategory: data.subcategory, // Gửi subcategory lên backend
             location: data.location,
             discount: Number(data.discount) || 0,
             description: data.description ? draftToHtml(convertToRaw(data.description.getCurrentContent())) : '',
@@ -246,6 +256,7 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
           reset({
             name: data.name,
             type: data.type,
+            subcategory: data.subcategory,
             discount: data.discount || '',
             description: data.description ? convertHTMLToDraft(data.description) : '',
             slug: data.slug,
@@ -280,6 +291,26 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
       })
   }
 
+  //thêm////////////////////////////////////////////////////////////////////////////////////
+  // Fetch subcategories dựa trên loại sản phẩm
+  const fetchSubcategories = async (productTypeId: string) => {
+    try {
+      const response = await fetch(`${API_ENDPOINT.MANAGE_PRODUCT.PRODUCT_TYPE.INDEX}/${productTypeId}/subcategories`) // Gọi API để lấy subcategories
+      const data = await response.json()
+      if (data.subcategories) {
+        setOptionSubcategories(
+          data.subcategories.map((subcategory: string) => ({
+            label: subcategory,
+            value: subcategory
+          }))
+        )
+      }
+    } catch (error) {
+      console.error('Failed to fetch subcategories:', error)
+    }
+  }
+  ///////////////////////////////////////////////////////
+
   const fetchAllCities = async () => {
     setLoading(true)
     await getAllCities({ params: { limit: -1, page: -1 } })
@@ -311,6 +342,14 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
     fetchAllProductTypes()
     fetchAllCities()
   }, [])
+
+  useEffect(() => {
+    // Khi giá trị type thay đổi (bao gồm khi mở form chỉnh sửa), gọi fetchSubcategories
+    const currentType = getValues('type')
+    if (currentType) {
+      fetchSubcategories(currentType)
+    }
+  }, [getValues('type')]) // Lắng nghe sự thay đổi của type
 
   return (
     <>
@@ -538,7 +577,13 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                               </InputLabel>
                               <CustomSelect
                                 fullWidth
-                                onChange={onChange}
+                                // onChange={onChange}
+                                onChange={(newValue) => {
+                                  console.log("newwValue", newValue.target.value);
+                                  onChange(newValue)
+                                  fetchSubcategories(String(newValue.target.value)) // Fetch subcategories khi loại sản phẩm thay đổi
+                                }}
+                                //
                                 options={optionTypes}
                                 error={Boolean(errors?.type)}
                                 onBlur={onBlur}
@@ -559,6 +604,50 @@ const CreateEditProduct = (props: TCreateEditProduct) => {
                             </Box>
                           )}
                         />
+                      </Grid>
+
+                      <Grid item md={6} xs={12}>
+                        <Controller
+                          name='subcategory'
+                          control={control}
+                          render={({ field: { onChange, onBlur, value } }) => (
+                            <Box>
+                              <InputLabel
+                                sx={{
+                                  fontSize: '13px',
+                                  marginBottom: '4px',
+                                  display: 'block',
+                                  color: errors?.subcategory
+                                    ? theme.palette.error.main
+                                    : `rgba(${theme.palette.customColors.main}, 0.68)`
+                                }}
+                              >
+                                {t('Subcategory')}
+                              </InputLabel>
+                              <CustomSelect
+                                fullWidth
+                                onChange={onChange}
+                                options={optionSubcategories} // Hiển thị danh sách subcategories
+                                error={Boolean(errors?.subcategory)}
+                                onBlur={onBlur}
+                                value={value}
+                                placeholder={t('Select')}
+                              />
+                              {errors?.subcategory?.message && (
+                                <FormHelperText
+                                  sx={{
+                                    color: errors?.subcategory
+                                      ? theme.palette.error.main
+                                      : `rgba(${theme.palette.customColors.main}, 0.42)`
+                                  }}
+                                >
+                                  {errors?.subcategory?.message}
+                                </FormHelperText>
+                              )}
+                            </Box>
+                          )}
+                        />
+
                       </Grid>
                       <Grid item md={6} xs={12}>
                         <Controller

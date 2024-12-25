@@ -14,6 +14,7 @@ import orderProduct from 'src/stores/order-product'
 import reviews from 'src/stores/reviews'
 import comments from 'src/stores/comments'
 import notification from 'src/stores/notification'
+import subcategory from 'src/stores/subcategory'
 
 export const store = configureStore({
   reducer: {
@@ -28,7 +29,8 @@ export const store = configureStore({
     orderProduct,
     reviews,
     comments,
-    notification
+    notification,
+    subcategory
   },
   middleware: (
     getDefaultMiddleware //Redux Thunk
