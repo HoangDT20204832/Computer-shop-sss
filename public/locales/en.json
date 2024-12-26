@@ -333,6 +333,7 @@
     "Monitor":"Monitor",
     "Accessory":"Accessory",
      "Product_Type": "Product Type",
-    "Unknown": "Unknown"
+    "Unknown": "Unknown",
+    "Choose_according_to_your_needs":"Choose according to your needs"
 
   }

@@ -19,7 +19,7 @@ import InputSearch from 'src/components/input-search'
 import NoData from 'src/components/no-data'
 
 // ** Config
-import {PAGE_SIZE_OPTION3 } from 'src/configs/gridConfig'
+import { PAGE_SIZE_OPTION3 } from 'src/configs/gridConfig'
 
 // ** Services
 import { getAllProductTypes } from 'src/services/product-type'
@@ -39,6 +39,8 @@ import { useRouter } from 'next/router'
 import { ROUTE_CONFIG } from 'src/configs/route'
 import IconifyIcon from 'src/components/Icon'
 import CardSkeleton from '../product/components/CardSkeleton'
+import { getSubcategoriesService } from 'src/services/subcategory'
+import { hexToRGBA } from 'src/utils/hex-to-rgba'
 
 type TProps = {}
 
@@ -71,7 +73,12 @@ const ProductTypePage: NextPage<TProps> = () => {
   const [productsPublic, setProductsPublic] = useState({
     data: [],
     total: 0
-  })  
+  })
+
+  // State để lưu danh sách subcategories
+  const [subcategories, setSubcategories] = useState<string[]>([])
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string>('Tất cả') // Mặc định là 'Tất cả'
+
 
   const firstRender = useRef<boolean>(false)
 
@@ -97,13 +104,32 @@ const ProductTypePage: NextPage<TProps> = () => {
 
   console.log("productTypeId", productTypeSlug)
   // fetch api
+
+  // hàm lấy tát cả subcategory của loại sản phẩm lớn
+  const handleGetSubcategories = async (productTypeId: string) => {
+    try {
+      const response = await getSubcategoriesService(productTypeId)
+      // console.log("res", response)
+      const data = response?.data
+      if (data.subcategories) {
+        setSubcategories(['Tất cả', ...data.subcategories]) // Thêm "Tất cả" vào đầu danh sách
+      }
+    } catch (error) {
+      console.error('Failed to fetch subcategories:', error)
+      setSubcategories(['Tất cả']) // Nếu có lỗi, chỉ hiển thị "Tất cả"
+    }
+  }
+
   const handleGetListProducts = async () => {
     setLoading(true)
     const query = {
-      params: { limit: pageSize, page: page, search: searchBy, order: sortBy, productType: productTypeIded
-        , ...formatFilter(filterBy) }
+      params: {
+        limit: pageSize, page: page, search: searchBy, order: sortBy, productType: productTypeIded,
+        subcategory: selectedSubcategory === 'Tất cả' ? '' : selectedSubcategory, // Lọc theo subcategory
+        ...formatFilter(filterBy)
+      }
     }
-    if(productTypeIded){
+    if (productTypeIded) {
       await getAllProductsPublic(query).then(res => {
         if (res?.data) {
           setLoading(false)
@@ -147,8 +173,8 @@ const ProductTypePage: NextPage<TProps> = () => {
       .then(res => {
         const data = res?.data.productTypes
         if (data) {
-          const typeProduct = data?.find((item:{ name: string; slug: string, _id:string }) => item.slug === productTypeSlug)
-          console.log("nameProductType",typeProduct)
+          const typeProduct = data?.find((item: { name: string; slug: string, _id: string }) => item.slug === productTypeSlug)
+          console.log("nameProductType", typeProduct)
           setNameProductType(typeProduct?.name)
           setproductTypeIded(typeProduct?._id)
           // setOptionTypes(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
@@ -185,21 +211,24 @@ const ProductTypePage: NextPage<TProps> = () => {
     // handleGetListProducts()
   }, [])
 
-  useEffect(()=>{
-    handleGetListProducts()
-  },[productTypeIded])
+  useEffect(() => {
+    if (productTypeIded) {
+      handleGetSubcategories(productTypeIded)
+      handleGetListProducts()
+    }
+  }, [productTypeIded])
 
 
   useEffect(() => {
-      handleGetListProducts()
-    
+    handleGetListProducts()
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize, filterBy])
 
   useEffect(() => {
-  
-      setFilterBy({  minStar: reviewSelected, productLocation: locationSelected })
-  }, [ reviewSelected, locationSelected])
+
+    setFilterBy({ minStar: reviewSelected, productLocation: locationSelected })
+  }, [reviewSelected, locationSelected])
 
   useEffect(() => {
     if (isSuccessLike) {
@@ -245,23 +274,68 @@ const ProductTypePage: NextPage<TProps> = () => {
         }}
       >
 
-        <Box sx={{display: 'flex'}}>
+        <Box sx={{ display: 'flex' }}>
           <Typography color={theme.palette.primary.main}
-            sx={{cursor: 'pointer',fontWeight: 'bold'}}
-            onClick={()=> router.push(ROUTE_CONFIG.HOME)}
-           >Trang chủ         
-           </Typography>
-           <IconifyIcon icon="tabler:chevron-right"/>
-           <Typography color={theme.palette.primary.main}>
-               {nameProductType}
-           </Typography>
+            sx={{ cursor: 'pointer', fontWeight: 'bold' }}
+            onClick={() => router.push(ROUTE_CONFIG.HOME)}
+          >Trang chủ
+          </Typography>
+          <IconifyIcon icon="tabler:chevron-right" />
+          <Typography color={theme.palette.primary.main}>
+            {nameProductType}
+          </Typography>
         </Box>
-  
-        {/* <StyledTabs value={productTypeSelected} onChange={handleChange} aria-label='wrapped label tabs example'>
-          {optionTypes.map(opt => {
-            return <Tab key={opt.value} value={opt.value} label={opt.label} />
-          })}
-        </StyledTabs> */}
+        <Box>
+          <Typography color={theme.palette.primary.main} fontSize={18} fontWeight={600}>
+            {t("Choose_according_to_your_needs")}
+          </Typography>
+
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              mt: 2,
+              mb: 3,
+              p: 2,
+              borderRadius: 2,
+              backgroundColor: hexToRGBA(theme.palette.primary.main, 0.3)
+            }}
+          >
+            {subcategories.map((subcategory, index) => (
+              <Typography
+                key={index}
+                onClick={() => {
+                  setSelectedSubcategory(subcategory)
+                  setFilterBy(prev => ({
+                    ...prev,
+                    subcategory: subcategory === 'Tất cả' ? '' : subcategory // Nếu chọn "Tất cả", không lọc
+                  }))
+                  setPage(1) // Reset về trang đầu
+                }}
+                sx={{
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  color:
+                    selectedSubcategory === subcategory
+                      ? theme.palette.primary.contrastText
+                      : theme.palette.text.primary,
+                  backgroundColor: selectedSubcategory === subcategory ? theme.palette.primary.main : 'transparent',
+                  p: 2,
+                  borderRadius: 4,
+                  minWidth: 100,
+                  transition: 'all 0.3s ease',
+                  textAlign: 'center',
+                  fontSize: "16px"
+                }}
+              >
+                {subcategory}
+              </Typography>
+            ))}
+          </Box>
+
+        </Box>
+
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
           <Box sx={{ width: '300px' }}>
             <InputSearch
@@ -299,7 +373,7 @@ const ProductTypePage: NextPage<TProps> = () => {
               </Box>
             </Grid>
             <Grid item md={9} xs={12}>
-            {loading ? (
+              {loading ? (
                 //Hiển thị Khung card khi đang loading
                 <Grid
                   container
@@ -311,37 +385,37 @@ const ProductTypePage: NextPage<TProps> = () => {
                   {Array.from({ length: 4 }).map((_, index) => {
                     return (
                       <Grid item key={index} md={4} sm={6} xs={12}>
-                        <CardSkeleton/>
+                        <CardSkeleton />
                       </Grid>
                     )
                   })}
                 </Grid>
               ) : (
                 <Grid
-                container
-                spacing={{
-                  md: 6,
-                  xs: 4
-                }}
-              >
-                {productsPublic?.data?.length > 0 ? (
-                  <>
-                    {productsPublic?.data?.map((item: TProduct) => {
-                      return (
-                        <Grid item key={item._id} md={4} sm={6} xs={12}>
-                          <CardProduct item={item} />
-                        </Grid>
-                      )
-                    })}
-                  </>
-                ) : (
-                  <Box sx={{ width: '100%', mt: 10 }}>
-                    <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                  </Box>
-                )}
-              </Grid>
+                  container
+                  spacing={{
+                    md: 6,
+                    xs: 4
+                  }}
+                >
+                  {productsPublic?.data?.length > 0 ? (
+                    <>
+                      {productsPublic?.data?.map((item: TProduct) => {
+                        return (
+                          <Grid item key={item._id} md={4} sm={6} xs={12}>
+                            <CardProduct item={item} />
+                          </Grid>
+                        )
+                      })}
+                    </>
+                  ) : (
+                    <Box sx={{ width: '100%', mt: 10 }}>
+                      <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+                    </Box>
+                  )}
+                </Grid>
               )}
-            
+
             </Grid>
           </Grid>
         </Box>
