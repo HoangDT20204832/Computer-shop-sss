@@ -46,7 +46,7 @@ import Slider1 from '/public/images/typeP1.png'
 import Slider2 from '/public/images/typeP2.png'
 import Slider3 from '/public/images/typeP3.png'
 import Slider4 from '/public/images/typeP7.png'
-import Slider5 from '/public/images/pc2.png'
+import Slider5 from '/public/images/typeP9.png'
 import Slider6 from '/public/images/typeP8.png'
 
 
