@@ -358,5 +358,10 @@
     "Accessory":"Linh kiện máy tính",
     "Product_Type": "Loại sản phẩm",
     "Unknown": "Không xác định",
-    "Choose_according_to_your_needs":"Chọn theo nhu cầu"
+    "Choose_according_to_your_needs":"Chọn theo nhu cầu",
+    "Category":"Danh mục",
+    "Apply": "Áp dụng",
+    "Price_Range": "Khoảng giá",
+    "Min_Price":"TỪ",
+    "Max_Price": "ĐẾN"
   }

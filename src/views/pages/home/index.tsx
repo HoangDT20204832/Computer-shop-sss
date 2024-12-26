@@ -14,7 +14,6 @@ import { Box, Grid, Typography, useTheme, Tab, Tabs, TabsProps } from '@mui/mate
 import Spinner from 'src/components/spinner'
 import CustomPagination from 'src/components/custom-pagination'
 import CardProduct from 'src/views/pages/product/components/CardProduct'
-import FilterProduct from 'src/views/pages/product/components/FilterProduct'
 import InputSearch from 'src/components/input-search'
 import NoData from 'src/components/no-data'
 
@@ -23,7 +22,6 @@ import { PAGE_SIZE_OPTION2 } from 'src/configs/gridConfig'
 
 // ** Services
 import { getAllProductTypes } from 'src/services/product-type'
-import { getAllCities } from 'src/services/city'
 import { getAllProductsPublic } from 'src/services/product'
 
 // ** Utils
@@ -40,6 +38,19 @@ import { useRouter } from 'next/router'
 import CardSkeleton from '../product/components/CardSkeleton'
 import CustomSelect from 'src/components/custom-select'
 import ImageSearchBar from 'src/components/image-upload'
+
+import Slider1 from '/public/images/slide3.png'
+import Slider2 from '/public/images/slider1.png'
+import Slider3 from '/public/images/slider2.png'
+import Slider4 from '/public/images/slide2.png'
+import Slider5 from '/public/images/slider4.jpg'
+import Slider6 from '/public/images/slider10.jpg'
+import Image from 'next/image'
+
+// Danh sách hình ảnh
+
+const imageList: any[] = [Slider1, Slider2, Slider3, Slider4]
+
 
 type TProps = {}
 
@@ -74,9 +85,9 @@ const HomePage: NextPage<TProps> = () => {
     total: 0
   })
   const [category, setCategory] = useState<string>(''); // State để quản lý category
-  const [productTypeId, setProductTypeId] = useState<string>(''); 
-  const [nameProductType, setNameProductType] = useState<string>(''); 
-  const [dataProductType, setDataProductType] = useState<any[]>([]); 
+  const [productTypeId, setProductTypeId] = useState<string>('');
+  const [nameProductType, setNameProductType] = useState<string>('');
+  const [dataProductType, setDataProductType] = useState<any[]>([]);
   // const firstRender = useRef<boolean>(false)
 
   // ** Redux
@@ -94,6 +105,36 @@ const HomePage: NextPage<TProps> = () => {
 
   // ** theme
   const theme = useTheme()
+  const categoriesWithImages = optionTypes.map((category) => {
+    let bgColor = '';
+    let imageUrl = '';
+    switch (category.value) {
+      case 'accessory':
+        bgColor = '#B39DDB'; // Màu tím nhạt
+        imageUrl = '/images/bg4.png';
+        break;
+      case 'monitor':
+        bgColor = '#FFCC80'; // Màu cam nhạt
+        imageUrl = '/images/bg3.png';
+        break;
+      case 'pc':
+        bgColor = '#EC556C'; // Màu đỏ nhạt
+        imageUrl = '/images/bg2.png';
+        break;
+      case 'laptop':
+        bgColor = '#A5D6A7'; // Màu xanh lá nhạt
+        imageUrl = '/images/background1.png';
+        break;
+
+      default:
+        bgColor = '#E0E0E0'; // Màu xám nhạt
+        imageUrl = '/images/default.png';
+    }
+
+    return { ...category, bgColor, image: imageUrl };
+  });
+
+
 
   // fetch api
   const handleGetListProducts = async () => {
@@ -119,11 +160,12 @@ const HomePage: NextPage<TProps> = () => {
     setPageSize(pageSize)
   }
 
+  console.log("optionTypes", optionTypes)
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (newValue: string) => {
     // setProductTypeSelected(newValue)
     // Tìm ID của loại sản phẩm dựa trên `newValue`()(slug)
-    // const selectedType = optionTypes.find((type) => type.value === newValue);
+    const selectedType = optionTypes.find((type) => type.value === newValue);
 
     // if (selectedType) {
     // Điều hướng tới đường dẫn `/product-type/[label]` và kèm ID dưới dạng query
@@ -132,7 +174,6 @@ const HomePage: NextPage<TProps> = () => {
       // query: { id: selectedType.id },    // Gửi kèm ID qua query
     });
     // }
-
   }
 
 
@@ -263,23 +304,123 @@ const HomePage: NextPage<TProps> = () => {
           width: '100%'
         }}
       >
-        <ImageSlider /> {/* Slider hình ảnh */}
+        <Box>
+          <Grid container spacing={1.5}>
+            <Grid item md={8} xs={12}>
+              <Box sx={{ height: '350px' }}>
+                <ImageSlider
+                  imageList={imageList}
+                />
+              </Box>
+            </Grid>
+            <Grid
+              item
+              md={4}
+              xs={12}
+              sx={{
+                display: { xs: 'none', md: 'block' },
+                height: '100%'
+              }}
+            >
+              {/* Ảnh nhỏ thứ nhất */}
+              <Box sx={{ flex: 1, height: '172px', overflow: 'hidden', borderRadius: "8px" }}>
+                <Image src={Slider6} alt={`slide-5`}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </Box>
 
-        <StyledTabs value={productTypeSelected} onChange={handleChange} aria-label='wrapped label tabs example'>
+              {/* Ảnh nhỏ thứ hai */}
+              <Box sx={{ flex: 1, height: '172px', overflow: 'hidden', mt: 1.5, borderRadius: "8px" }}>
+                <Image src={Slider5} alt={`slide-5`}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+
+
+        {/* <StyledTabs value={productTypeSelected} onChange={handleChange} aria-label='wrapped label tabs example'>
           {optionTypes.map(opt => {
             return <Tab key={opt.value} value={opt.value} label={t(opt.label)} />
           })}
-        </StyledTabs>
+        </StyledTabs> */}
+        <Box sx={{display:"flex", flexDirection:"column",alignItems:"center", gap:1, mt:3,
+        }}>
+          <Typography fontWeight={600} color={theme.palette.primary.main} variant="h4">{t("Category")}</Typography>
 
-        <Box sx={{display:"flex", flexDirection:"column", alignItems:"center"}}>
+          <Box
+          sx={{
+            display: 'flex',
+            gap: 5, // Khoảng cách giữa các ô
+            justifyContent: 'center', // Căn giữa toàn bộ hàng
+            alignItems: 'center',
+            padding: 2,
+            overflowX: 'auto', // Cuộn ngang nếu không đủ không gian
+          }}
+        >
+          {categoriesWithImages.map((category) => (
+            <Box onClick={()=>handleChange(category.value)}
+              key={category.id}
+              sx={{
+                width: 140,
+                height: 140,
+                borderRadius: 2,
+                position: 'relative',
+                backgroundColor: category.bgColor, // Màu nền
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: 2,
+                cursor: 'pointer',
+                '&:hover': {
+                  transform: 'scale(1.05)',
+                  transition: 'transform 0.3s ease',
+                },
+              }}
+            >
+              {/* Label */}
+              <Typography
+                variant="body1"
+                sx={{
+                  fontWeight: 'bold',
+                  position: 'absolute',
+                  top: 8,
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  color: '#000',
+                  zIndex: 2,
+                }}
+              >
+                {t(category.label)}
+              </Typography>
+              {/* Hình ảnh */}
+              <img
+                src={category.image}
+                alt={t(category.label)}
+                style={{
+                  width: '90%', // Để hình ảnh không lấn ra ngoài
+                  height: '90%',
+                  objectFit: 'contain',
+                  zIndex: 1,
+                }}
+              />
+            </Box>
+          ))}
+        </Box>
+        </Box>
+     
+
+
+        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           {/* Component tìm kiếm bằng ảnh */}
           <ImageSearchBar setCategory={setCategory} />
 
           {/* Hiển thị category */}
           {category && (
-            <Box sx={{ margin: '10px auto 0px', textAlign: "center" , display:"flex", alignItems:"center"}}>
+            <Box sx={{ margin: '10px auto 0px', textAlign: "center", display: "flex", alignItems: "center" }}>
               <Typography fontSize={20} fontWeight={700} >{t('Product_Type')}:</Typography>
-              <Typography fontSize={20} fontWeight={700} sx={{color:theme.palette.primary.main}}>{t(nameProductType) || t('Unknown')}</Typography>
+              <Typography fontSize={20} fontWeight={700} sx={{ color: theme.palette.primary.main }}>{t(nameProductType) || t('Unknown')}</Typography>
             </Box>
           )}
 

@@ -98,7 +98,7 @@ const HorizontalLayout: NextPage<TProps> = ({ open, toggleDrawer, isHideMenu }) 
 
         <Typography
           component='h1'
-          variant='h6'
+          variant='h5'
           color='primary'
           noWrap
           sx={{ flexGrow: 1, fontWeight: '600', cursor: 'pointer' }}

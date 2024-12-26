@@ -41,6 +41,20 @@ import IconifyIcon from 'src/components/Icon'
 import CardSkeleton from '../product/components/CardSkeleton'
 import { getSubcategoriesService } from 'src/services/subcategory'
 import { hexToRGBA } from 'src/utils/hex-to-rgba'
+import ImageSlider from 'src/components/image-slider'
+import Slider1 from '/public/images/typeP1.png'
+import Slider2 from '/public/images/typeP2.png'
+import Slider3 from '/public/images/typeP3.png'
+import Slider4 from '/public/images/typeP7.png'
+import Slider5 from '/public/images/pc2.png'
+import Slider6 from '/public/images/typeP8.png'
+
+
+// Danh sách hình ảnh
+
+const imageList1: any[] = [Slider1, Slider2, Slider3]
+const imageList2: any[] = [Slider4, Slider5, Slider6]
+
 
 type TProps = {}
 
@@ -78,6 +92,8 @@ const ProductTypePage: NextPage<TProps> = () => {
   // State để lưu danh sách subcategories
   const [subcategories, setSubcategories] = useState<string[]>([])
   const [selectedSubcategory, setSelectedSubcategory] = useState<string>('Tất cả') // Mặc định là 'Tất cả'
+  const [minPriceSelected, setMinPriceSelected] = useState('')
+  const [maxPriceSelected, setMaxPriceSelected] = useState('')
 
 
   const firstRender = useRef<boolean>(false)
@@ -99,10 +115,10 @@ const ProductTypePage: NextPage<TProps> = () => {
   const theme = useTheme()
 
   const router = useRouter()
-  console.log("router", router)
+  // console.log("router", router)
   const productTypeSlug = router.query?.productTypeId as string
+  // console.log("productTypeId", productTypeSlug)
 
-  console.log("productTypeId", productTypeSlug)
   // fetch api
 
   // hàm lấy tát cả subcategory của loại sản phẩm lớn
@@ -125,6 +141,8 @@ const ProductTypePage: NextPage<TProps> = () => {
     const query = {
       params: {
         limit: pageSize, page: page, search: searchBy, order: sortBy, productType: productTypeIded,
+        minPrice: minPriceSelected || undefined, // Thêm giá trị minPrice nếu có
+        maxPrice: maxPriceSelected || undefined, // Thêm giá trị maxPrice nếu có
         subcategory: selectedSubcategory === 'Tất cả' ? '' : selectedSubcategory, // Lọc theo subcategory
         ...formatFilter(filterBy)
       }
@@ -164,6 +182,8 @@ const ProductTypePage: NextPage<TProps> = () => {
   const handleResetFilter = () => {
     setLocationSelected('')
     setReviewSelected('')
+    setMinPriceSelected('')
+    setMaxPriceSelected('')
   }
 
   // ** fetch api
@@ -177,11 +197,6 @@ const ProductTypePage: NextPage<TProps> = () => {
           console.log("nameProductType", typeProduct)
           setNameProductType(typeProduct?.name)
           setproductTypeIded(typeProduct?._id)
-          // setOptionTypes(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
-          // setProductTypeSelected(data?.[0]?._id)
-          // firstRender.current = true
-
-          // return nameProductType
         }
         setLoading(false)
       })
@@ -206,10 +221,13 @@ const ProductTypePage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    fetchAllCities()
-    fetchAllTypes()
-    // handleGetListProducts()
-  }, [])
+    if(productTypeSlug){
+      fetchAllCities()
+      fetchAllTypes()
+    }
+  }, [productTypeSlug])
+
+
 
   useEffect(() => {
     if (productTypeIded) {
@@ -223,7 +241,7 @@ const ProductTypePage: NextPage<TProps> = () => {
     handleGetListProducts()
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize, filterBy])
+  }, [sortBy, searchBy, page, pageSize, filterBy,minPriceSelected, maxPriceSelected])
 
   useEffect(() => {
 
@@ -274,17 +292,38 @@ const ProductTypePage: NextPage<TProps> = () => {
         }}
       >
 
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex', alignItems: "center" }}>
           <Typography color={theme.palette.primary.main}
-            sx={{ cursor: 'pointer', fontWeight: 'bold' }}
+            sx={{ cursor: 'pointer', fontWeight: 'bold', fontSize: '18px' }}
             onClick={() => router.push(ROUTE_CONFIG.HOME)}
           >Trang chủ
           </Typography>
           <IconifyIcon icon="tabler:chevron-right" />
-          <Typography color={theme.palette.primary.main}>
+          <Typography fontSize={18} color={theme.palette.primary.main}>
             {nameProductType}
           </Typography>
         </Box>
+
+        <Box>
+          <Grid container spacing={1.5} mt={2} mb={2}>
+            <Grid item md={6} xs={12} sx={{ borderRadius: "20px" }}>
+              <Box sx={{ height: '100px' }}>
+                <ImageSlider
+                  imageList={imageList1}
+                />
+              </Box>
+            </Grid>
+            <Grid item md={6} xs={12} sx={{ display: { xs: 'none', md: 'block' }, borderRadius: "20px" }}>
+              <Box sx={{ height: '100px' }}>
+                <ImageSlider
+                  imageList={imageList2}
+                />
+              </Box>
+            </Grid>
+
+          </Grid>
+        </Box>
+
         <Box>
           <Typography color={theme.palette.primary.main} fontSize={18} fontWeight={600}>
             {t("Choose_according_to_your_needs")}
@@ -369,6 +408,13 @@ const ProductTypePage: NextPage<TProps> = () => {
                   handleReset={handleResetFilter}
                   optionCities={optionCities}
                   handleFilterProduct={handleFilterProduct}
+
+                  minPriceSelected={minPriceSelected} // Truyền minPrice vào
+                  maxPriceSelected={maxPriceSelected} // Truyền maxPrice vào
+                  setMinPriceSelected={setMinPriceSelected} // Cập nhật minPrice
+                  setMaxPriceSelected={setMaxPriceSelected} // Cập nhật maxPrice
+                  // handleSearchByPrice={handleSearchByPrice} // Truyền hàm tìm kiếm
+
                 />
               </Box>
             </Grid>

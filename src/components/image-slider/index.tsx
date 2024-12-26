@@ -4,15 +4,13 @@ import IconifyIcon from '../Icon'
 import Image from 'next/image'
 
 // ** IMAGE IMPORTS */
-import Slider1 from '/public/images/slide1.png'
-import Slider2 from '/public/images/slide2.png'
-import Slider3 from '/public/images/slide3.png'
-import Slider4 from '/public/images/slide4.png'
 
-// Danh sách hình ảnh
-const imageList: any[] = [Slider1, Slider2, Slider3,Slider4]
+interface TImageSlider {
+  imageList: any[]
+}
 
-const ImageSlider: React.FC = () => {
+const ImageSlider = (props: TImageSlider ) => {
+  const { imageList } = props
   const [currentIndex, setCurrentIndex] = useState<number>(0)
 
   // Xử lý nút Previous
@@ -39,12 +37,14 @@ const ImageSlider: React.FC = () => {
       sx={{
         position: 'relative',
         width: '100%',
-        height: '400px',
+        height: '100%',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        mb: 4
+        borderRadius:"8px"
+        // objectFit: 'cover'
+        // mb: 4
       }}
     >
       {/* Container chứa hình ảnh */}
@@ -61,7 +61,7 @@ const ImageSlider: React.FC = () => {
             <Image
               src={img}
               alt={`slide-${index}`}
-              style={{ width: '100%', height: '400px', objectFit: 'cover' }}
+              style={{ width: '100%', height:'100%', objectFit: 'cover' }}
             />
           </Box>
         ))}

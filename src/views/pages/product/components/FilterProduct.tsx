@@ -10,9 +10,13 @@ import {
   FormControlLabel,
   FormLabel,
   IconButton,
+  InputAdornment,
   Radio,
   RadioGroup,
-  Tooltip
+  TextField,
+  Tooltip,
+  Button,
+  TextFieldProps
 } from '@mui/material'
 
 // ** Config
@@ -25,6 +29,10 @@ interface TFilterProduct {
   locationSelected: string
   reviewSelected: string
   handleReset: () => void
+  minPriceSelected: string
+  maxPriceSelected: string
+  setMinPriceSelected: React.Dispatch<React.SetStateAction<string>>
+  setMaxPriceSelected: React.Dispatch<React.SetStateAction<string>>
 }
 
 const StyleFilterProduct = styled(Box)<BoxProps>(({ theme }) => ({
@@ -34,9 +42,29 @@ const StyleFilterProduct = styled(Box)<BoxProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.paper
 }))
 
+const StyleTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
+    '.MuiInputBase-root': {
+         height:"40px"
+    }
+}))
+
 const FilterProduct = (props: TFilterProduct) => {
   // ** Props
-  const { handleFilterProduct, optionCities, reviewSelected, locationSelected, handleReset } = props
+  const {
+    handleFilterProduct,
+    optionCities,
+    reviewSelected,
+    locationSelected,
+    handleReset,
+    minPriceSelected,
+    maxPriceSelected,
+    setMinPriceSelected,
+    setMaxPriceSelected
+  } = props
+
+  // ** State cho giá trị tạm thời
+  const [tempMinPrice, setTempMinPrice] = React.useState<string>('')
+  const [tempMaxPrice, setTempMaxPrice] = React.useState<string>('')
 
   // ** Hooks
   const { t } = useTranslation()
@@ -49,11 +77,24 @@ const FilterProduct = (props: TFilterProduct) => {
 
   const handleResetFilter = () => {
     handleReset()
+    setTempMinPrice('')
+    setTempMaxPrice('')
+  }
+
+  const handleSearch = () => {
+    setMinPriceSelected(tempMinPrice)
+    setMaxPriceSelected(tempMaxPrice)
+  }
+
+  const handleNumericInput = (value: string) => {
+    // Chỉ cho phép nhập số
+    return value.replace(/[^0-9]/g, '')
   }
 
   return (
     <StyleFilterProduct sx={{ width: '100%', padding: 4 }}>
-      {Boolean(reviewSelected || locationSelected) && (
+      {/* Nút xóa bộ lọc */}
+      {Boolean(reviewSelected || locationSelected || minPriceSelected || maxPriceSelected) && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
           <Tooltip title={t('Delete_filter')}>
             <IconButton onClick={handleResetFilter}>
@@ -62,6 +103,8 @@ const FilterProduct = (props: TFilterProduct) => {
           </Tooltip>
         </Box>
       )}
+
+      {/* Bộ lọc theo đánh giá */}
       <Box>
         <FormControl>
           <FormLabel sx={{ color: theme.palette.primary.main, fontWeight: 600 }} id='radio-group-review'>
@@ -85,6 +128,8 @@ const FilterProduct = (props: TFilterProduct) => {
           </RadioGroup>
         </FormControl>
       </Box>
+
+      {/* Bộ lọc theo vị trí */}
       <Box sx={{ mt: 2 }}>
         <FormControl>
           <FormLabel sx={{ color: theme.palette.primary.main, fontWeight: 600 }} id='radio-group-location'>
@@ -107,6 +152,43 @@ const FilterProduct = (props: TFilterProduct) => {
             })}
           </RadioGroup>
         </FormControl>
+      </Box>
+
+      {/* Bộ lọc theo giá */}
+      <Box sx={{ mt: 2 }}>
+        <FormLabel sx={{ color: theme.palette.primary.main, fontWeight: 600 }}>{t('Price_Range')}</FormLabel>
+        <Box sx={{ display: 'flex', gap: 2, mt: 1 }}>
+          <StyleTextField
+            fullWidth
+            value={tempMinPrice}
+            onChange={e => setTempMinPrice(handleNumericInput(e.target.value))} // Xử lý nhập giá trị số
+            placeholder={t('Min_Price')}
+            InputProps={{
+              inputMode: 'numeric', // Chỉ hiển thị bàn phím số trên thiết bị di động
+              startAdornment: <InputAdornment position='start'>₫</InputAdornment>
+            }}
+          />
+          <StyleTextField
+            fullWidth
+            value={tempMaxPrice}
+            onChange={e => setTempMaxPrice(handleNumericInput(e.target.value))} // Xử lý nhập giá trị số
+            placeholder={t('Max_Price')}
+            InputProps={{
+              inputMode: 'numeric', // Chỉ hiển thị bàn phím số trên thiết bị di động
+              startAdornment: <InputAdornment position='start'>₫</InputAdornment>
+            }}
+          />
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+          <Button
+            variant='contained'
+            onClick={handleSearch}
+            sx={{ width: '100%' }}
+            disabled={!tempMinPrice && !tempMaxPrice} // Chỉ kích hoạt khi có ít nhất một giá trị
+          >
+            {t('Apply')}
+          </Button>
+        </Box>
       </Box>
     </StyleFilterProduct>
   )

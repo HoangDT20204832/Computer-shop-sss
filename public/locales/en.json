@@ -334,6 +334,11 @@
     "Accessory":"Accessory",
      "Product_Type": "Product Type",
     "Unknown": "Unknown",
-    "Choose_according_to_your_needs":"Choose according to your needs"
+    "Choose_according_to_your_needs":"Choose according to your needs",
+    "Category": "Category",
+    "Apply": "Apply",
+    "Price_Range": "Price Range",
+    "Min_Price":"Min Price",
+    "Max_Price": "Max Price"
 
   }
