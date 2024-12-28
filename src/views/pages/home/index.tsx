@@ -47,6 +47,8 @@ import Slider5 from '/public/images/slider4.jpg'
 import Slider6 from '/public/images/slider10.jpg'
 import Image from 'next/image'
 
+import ChatBotAI from 'src/components/chat-bot'
+
 // Danh sách hình ảnh
 
 const imageList: any[] = [Slider1, Slider2, Slider3, Slider4]
@@ -298,6 +300,7 @@ const HomePage: NextPage<TProps> = () => {
   return (
     <>
       {loading && <Spinner />}
+      <ChatBotAI />
       <Box
         sx={{
           height: '100%',

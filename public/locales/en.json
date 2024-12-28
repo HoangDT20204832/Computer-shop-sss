@@ -339,6 +339,8 @@
     "Apply": "Apply",
     "Price_Range": "Price Range",
     "Min_Price":"Min Price",
-    "Max_Price": "Max Price"
+    "Max_Price": "Max Price",
+    "Support":"Support",
+    "WELCOME":"WELCOME"
 
   }
