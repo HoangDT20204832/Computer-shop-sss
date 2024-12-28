@@ -46,27 +46,27 @@ const CardCountStatusOrder = (props: any) => {
     const mapOrderStatus = {
         0: {
             title: t("Wait_payment"),
-            count: countStatusOrder?.data?.[0],
+            count: countStatusOrder?.data?.[0] | 0,
             themeColor: theme.palette.success.main
         },
         1: {
             title: t("Wait_delivery"),
-            count: countStatusOrder?.data?.[1],
+            count: countStatusOrder?.data?.[1]| 0,
             themeColor: theme.palette.warning.main
         },
         2: {
             title: t("Done_order"),
-            count: countStatusOrder?.data?.[2],
+            count: countStatusOrder?.data?.[2]| 0,
             themeColor: theme.palette.error.main
         },
         3: {
             title: t("Cancel_order"),
-            count: countStatusOrder?.data?.[3],
+            count: countStatusOrder?.data?.[3]| 0,
             themeColor: theme.palette.info.main
         },
         4: {
             title: t("Total orders"),
-            count: countStatusOrder?.total,
+            count: countStatusOrder?.total | 0,
             themeColor: theme.palette.primary.main
         }
     }
