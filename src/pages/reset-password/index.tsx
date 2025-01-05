@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 import { ReactNode } from 'react'
 // ** views
-import BlankLayout from 'src/views/layouts/BlackLayout'
+import BlankLayout from 'src/views/layouts/BlankLayout'
 import ResetPasswordPage from 'src/views/pages/reset-password'
 
 type TProps = {}

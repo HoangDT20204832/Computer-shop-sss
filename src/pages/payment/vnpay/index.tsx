@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 // ** views
 import PaymentVNPay from 'src/views/pages/payment/vnpay'
 // import BlankLayout from 'src/views/layouts/BlankLayout'
-import BlackLayout from 'src/views/layouts/BlackLayout'
+import BlackLayout from 'src/views/layouts/BlankLayout'
 
 type TProps = {}
 const Index: NextPage<TProps> = () => {

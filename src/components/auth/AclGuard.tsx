@@ -3,7 +3,7 @@ import { ReactNode, useEffect } from 'react'
 
 // ** Types
 import { buildAbilityFor, type ACLObj, type AppAbility } from 'src/configs/acl'
-import BlackLayout from 'src/views/layouts/BlackLayout'
+import BlackLayout from 'src/views/layouts/BlankLayout'
 import NotAuthorized from 'src/pages/401'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'

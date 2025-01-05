@@ -6,7 +6,7 @@ import {NextPage} from 'next'
 import { ReactNode } from 'react'
 
 // ** Views
-import BlackLayout from 'src/views/layouts/BlackLayout'
+import BlackLayout from 'src/views/layouts/BlankLayout'
 import RegisterPage from 'src/views/pages/register'
 import { PERMISSIONS } from 'src/configs/permission'
 // ** Pages
