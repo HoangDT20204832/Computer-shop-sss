@@ -76,7 +76,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   const [loading, setLoading] = useState(false)
   const [avatar, setAvatar] = useState('')
   // const [roleId, setRoleId] = useState('')
-  const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
+  // const [optionRoles, setOptionRoles] = useState<{ label: string; value: string }[]>([])
   const [optionCities, setOptionCities] = useState<{ label: string; value: string }[]>([])
 
   const [isDisableRole, setIsDisableRole] = useState(false)
@@ -145,7 +145,7 @@ const MyProfilePage: NextPage<TProps> = () => {
             address: data?.address,
             city: data?.city,
             phoneNumber: data?.phoneNumber,
-            role: data?.role?._id,
+            role: data?.role?.name,
             fullName: toFullName(data?.lastName, data?.middleName, data?.firstName, i18n?.language)
           })
         }
@@ -155,27 +155,27 @@ const MyProfilePage: NextPage<TProps> = () => {
       })
   }
 
-  const fetchAllRole = async () => {
-    setLoading(true)
-    await getAllRoles({ params: { limit: -1, page: -1 } })
-      .then(res => {
-        const data = res?.data?.roles
-        if (data) {
-          setOptionRoles(
-            data?.map((item: { name: string; _id: string }) => {
-              return {
-                label: item?.name,
-                value: item?._id
-              }
-            })
-          )
-        }
-        setLoading(false)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
+  // const fetchAllRole = async () => {
+  //   setLoading(true)
+  //   await getAllRoles({ params: { limit: -1, page: -1 } })
+  //     .then(res => {
+  //       const data = res?.data?.roles
+  //       if (data) {
+  //         setOptionRoles(
+  //           data?.map((item: { name: string; _id: string }) => {
+  //             return {
+  //               label: item?.name,
+  //               value: item?._id
+  //             }
+  //           })
+  //         )
+  //       }
+  //       setLoading(false)
+  //     })
+  //     .catch(e => {
+  //       setLoading(false)
+  //     })
+  // }
 
   const fetchAllCities = async () => {
     setLoading(true)
@@ -193,7 +193,7 @@ const MyProfilePage: NextPage<TProps> = () => {
   }
 
   useEffect(() => {
-    fetchAllRole()
+    // fetchAllRole()
     fetchAllCities()
   }, [])
 
@@ -223,7 +223,7 @@ const MyProfilePage: NextPage<TProps> = () => {
     dispatch(
       updateAuthMeAsync({
         email: data.email,
-        role: data.role,
+        // role: data.role,
         phoneNumber: data.phoneNumber,
         firstName: firstName,
         middleName: middleName,
@@ -349,51 +349,27 @@ const MyProfilePage: NextPage<TProps> = () => {
                 </Grid>
                 <Grid item md={6} xs={12}>
                   {!isDisableRole && (
-                    <Controller
-                      control={control}
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <div>
-                          <label
-                            style={{
-                              fontSize: '13px',
-                              marginBottom: '4px',
-                              display: 'block',
-                              color: errors?.role
-                                ? theme.palette.error.main
-                                : `rgba(${theme.palette.customColors.main}, 0.42)`
-                            }}
-                          >
-                            {t('Role')}
-                          </label>
-                          <CustomSelect
-                            fullWidth
-                            disabled
-                            onChange={onChange}
-                            options={optionRoles}
-                            error={Boolean(errors?.role)}
-                            onBlur={onBlur}
-                            value={value}
-                            placeholder={t('enter_your_role')}
-                          />
-
-                          {errors?.role?.message && (
-                            <FormHelperText
-                              sx={{
-                                color: errors?.role
-                                  ? theme.palette.error.main
-                                  : `rgba(${theme.palette.customColors.main}, 0.42)`
-                              }}
-                            >
-                              {errors?.role?.message}
-                            </FormHelperText>
-                          )}
-                        </div>
-                      )}
-                      name='role'
-                    />
+                     <Controller
+                     control={control}
+                     rules={{
+                       required: true
+                     }}
+                     render={({ field: { onChange, onBlur, value } }) => (
+                       <CustomTextField
+                         required
+                         disabled
+                         fullWidth
+                         label={t('Role')}
+                         onChange={onChange}
+                         onBlur={onBlur}
+                         value={value}
+                         placeholder={t('enter_your_role')}
+                         error={Boolean(errors?.role)}
+                         helperText={errors?.role?.message}
+                       />
+                     )}
+                     name='role'
+                   />
                   )}
                 </Grid>
               </Grid>

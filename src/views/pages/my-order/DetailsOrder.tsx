@@ -277,7 +277,7 @@ const MyOrderPage: NextPage<TProps> = () => {
                                             {item.name}
                                         </Typography>
                                         {+dataOrder.status === +STATUS_ORDER_PRODUCT[2].value && (
-                                            <Button onClick={() => setOpenReview({ open: true, productId: item?.product?._id, userId: user ? user?._id : "" })}>{t("Write_review")}</Button>
+                                            <Button sx={{fontWeight: 800, backgroundColor:hexToRGBA(theme.palette.primary.main, 0.2)}} onClick={() => setOpenReview({ open: true, productId: item?.product?._id, userId: user ? user?._id : "" })}>{t("Write_review")}</Button>
 
                                         )}
                                     </Box>

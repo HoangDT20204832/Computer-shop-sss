@@ -314,6 +314,7 @@
     "Count_order_by_status":"Count order by status",
     "Delivery_status":"Delivery status",
     "Paid_status":"Paid status",
+    "Order_name_user": "Order name user",
     "Notifications": "Notification",
     "Marked_all_notification_success": "Marked all notification success",
     "Delete_notification_success": "Delete notification success",
@@ -341,6 +342,8 @@
     "Min_Price":"Min Price",
     "Max_Price": "Max Price",
     "Support":"Support",
-    "WELCOME":"WELCOME"
+    "WELCOME":"WELCOME",
+    "Item_price": "Product Price",
+    "Shipping_price": "Shipping Price"
 
   }

@@ -338,6 +338,7 @@
     "Count_order_by_status": "Thống kê số lượng đơn hàng",
     "Delivery_status": "Trạng thái giao hàng",
     "Paid_status": "Trạng thái thanh toán",
+    "Order_name_user": "Tên người đặt hàng",
     "Notifications": "Thông báo",
     "Marked_all_notification_success": "Đánh dấu tất cả thông báo thành công",
     "Delete_notification_success": "Xóa thông báo thành công",
@@ -365,5 +366,7 @@
     "Min_Price":"TỪ",
     "Max_Price": "ĐẾN",
     "Support":"Hỗ trợ",
-    "WELCOME":"Chào bạn"
+    "WELCOME":"Chào bạn",
+    "Item_price": "Giá sản phẩm",
+    "Shipping_price": "Phí giao hàng"
   }

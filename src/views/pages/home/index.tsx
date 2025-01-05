@@ -54,7 +54,30 @@ import ChatBotAI from 'src/components/chat-bot'
 const imageList: any[] = [Slider1, Slider2, Slider3, Slider4]
 
 
-type TProps = {}
+interface TOptions {
+  label: string
+  value: string
+  id: string
+
+}
+
+
+type TProps = {
+  products: TProduct[],
+  totalCount: number
+  productTypesServer: TOptions[]
+  paramsServer: {
+    limit: number
+    page: number
+    order: string
+    // productType: string
+  }
+}
+
+interface TProductPublicState {
+  data: TProduct[],
+  total: number,
+}
 
 const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   '&.MuiTabs-root': {
@@ -62,7 +85,11 @@ const StyledTabs = styled(Tabs)<TabsProps>(({ theme }) => ({
   }
 }))
 
-const HomePage: NextPage<TProps> = () => {
+const HomePage: NextPage<TProps> = (props) => {
+
+    // ** Props
+    const {products, totalCount,  paramsServer, productTypesServer} = props
+
   // ** Translate
   const { t } = useTranslation()
 
@@ -82,7 +109,7 @@ const HomePage: NextPage<TProps> = () => {
   const [optionTypes, setOptionTypes] = useState<{ label: string; value: string, id: string }[]>([])
   const [filterBy, setFilterBy] = useState<Record<string, string | string[]>>({})
   const [loading, setLoading] = useState(false)
-  const [productsPublic, setProductsPublic] = useState({
+  const [productsPublic, setProductsPublic] = useState<TProductPublicState>({
     data: [],
     total: 0
   })
@@ -90,7 +117,8 @@ const HomePage: NextPage<TProps> = () => {
   const [productTypeId, setProductTypeId] = useState<string>('');
   const [nameProductType, setNameProductType] = useState<string>('');
   const [dataProductType, setDataProductType] = useState<any[]>([]);
-  // const firstRender = useRef<boolean>(false)
+  const firstRender = useRef<boolean>(false)
+  const isServerRendered = useRef<boolean>(false) // lần render đầu tiên thì cho server trả về dl; còn các thao tác sau thì để client xử lý
 
   // ** Redux
   const {
@@ -160,6 +188,9 @@ const HomePage: NextPage<TProps> = () => {
   const handleOnchangePagination = (page: number, pageSize: number) => {
     setPage(page)
     setPageSize(pageSize)
+    if(!firstRender.current) {
+      firstRender.current = true
+    }
   }
 
   console.log("optionTypes", optionTypes)
@@ -197,25 +228,32 @@ const HomePage: NextPage<TProps> = () => {
   //   setReviewSelected('')
   // }
 
+  useEffect(()=>{
+      if(productTypesServer){
+        setDataProductType(productTypesServer)
+      }
+  },[productTypesServer])
+  console.log("types", dataProductType)
+
   // ** fetch api
-  const fetchAllTypes = async () => {
-    setLoading(true)
-    await getAllProductTypes({ params: { limit: -1, page: -1 } })
-      .then(res => {
-        const data = res?.data.productTypes
-        console.log("hmmm", data)
-        setDataProductType(data)
-        if (data) {
-          setOptionTypes(data?.map((item: { name: string; slug: string, _id: string }) => ({ label: item.name, value: item.slug, id: item._id })))
-          // setProductTypeSelected(data?.[0]?._id)
-          // firstRender.current = true
-        }
-        setLoading(false)
-      })
-      .catch(e => {
-        setLoading(false)
-      })
-  }
+  // const fetchAllTypes = async () => {
+  //   setLoading(true)
+  //   await getAllProductTypes({ params: { limit: -1, page: -1 } })
+  //     .then(res => {
+  //       const data = res?.data.productTypes
+  //       console.log("hmmm", data)
+  //       setDataProductType(data)
+  //       if (data) {
+  //         setOptionTypes(data?.map((item: { name: string; slug: string, _id: string }) => ({ label: item.name, value: item.slug, id: item._id })))
+  //         // setProductTypeSelected(data?.[0]?._id)
+  //         // firstRender.current = true
+  //       }
+  //       setLoading(false)
+  //     })
+  //     .catch(e => {
+  //       setLoading(false)
+  //     })
+  // }
 
   // const fetchAllCities = async () => {
   //   setLoading(true)
@@ -233,9 +271,9 @@ const HomePage: NextPage<TProps> = () => {
   // }
 
   useEffect(() => {
-    fetchAllTypes()
+    // fetchAllTypes()    sửa
     // fetchAllCities()
-    handleGetListProducts()
+    // handleGetListProducts()
 
   }, [])
 
@@ -250,10 +288,28 @@ const HomePage: NextPage<TProps> = () => {
   console.log("type", productTypeId)
 
   useEffect(() => {
-    // if (firstRender.current) {
+    if (!isServerRendered.current && paramsServer && totalCount && !!products.length && !!productTypesServer.length) {
+      setPage(paramsServer.page)
+      setPageSize(paramsServer.limit)
+      setSortBy(paramsServer.order)
+      // if(paramsServer.productType) {
+      //   setProductTypeSelected(paramsServer.productType)
+      // }
+      setProductsPublic({
+        data: products,
+        total: totalCount
+      })
+      setOptionTypes(productTypesServer)
+      isServerRendered.current = true
+    }
+  }, [paramsServer, products, totalCount, productTypesServer])
+
+
+  useEffect(() => {
+    if (isServerRendered.current && firstRender.current) {
 
     handleGetListProducts()
-    // }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortBy, searchBy, page, pageSize, filterBy, productTypeId])
 
