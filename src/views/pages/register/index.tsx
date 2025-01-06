@@ -31,9 +31,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** Config
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
-// ** Images
-import RegisterDark from '/public/images/register-dark.png'
-import RegisterLight from '/public/images/register-light.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { registerAuthAsync, registerAuthFacebookAsync, registerAuthGoogleAsync } from 'src/stores/auth/actions'
 import { AppDispatch, RootState } from 'src/stores'
@@ -58,7 +55,7 @@ const RegisterPage: NextPage<TProps> = () => {
   // State
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const prevTokenLocal =  getLocalPreTokenAuthSocial()
+  const prevTokenLocal = getLocalPreTokenAuthSocial()
 
   // ** Router
   const router = useRouter()
@@ -73,7 +70,7 @@ const RegisterPage: NextPage<TProps> = () => {
   //useTranlate
   const { t } = useTranslation()
 
-  const { data: session,...restsss } = useSession()
+  const { data: session, ...restsss } = useSession()
   console.log("restsss", { restsss, session })
 
   const schema = yup.object().shape({
@@ -116,19 +113,19 @@ const RegisterPage: NextPage<TProps> = () => {
 
   const handleRegisterGoogle = async () => {
     signIn("google")            // hàm này sẽ client sẽ gửi signIn lên cho Google để nó tar về thông tin user
-                                // như: name, avatar, accesstoke,...
-    clearLocalPreTokenAuthSocial()  
-   }
+    // như: name, avatar, accesstoke,...
+    clearLocalPreTokenAuthSocial()
+  }
 
-   const handleRegisterFacebook = () => {
+  const handleRegisterFacebook = () => {
     signIn("facebook")
     clearLocalPreTokenAuthSocial()
   }
   useEffect(() => {
     if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
-      if((session as any)?.provider === "facebook") {
+      if ((session as any)?.provider === "facebook") {
         dispatch(registerAuthFacebookAsync((session as any)?.accessToken))
-      }else {
+      } else {
         dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
       }
       setLocalPreTokenAuthSocial((session as any)?.accessToken)
@@ -161,33 +158,17 @@ const RegisterPage: NextPage<TProps> = () => {
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          padding: '40px'
+          justifyContent: 'center',
+          padding: '40px',
+          background: 'linear-gradient(135deg, rgb(70, 35, 224) 0%,rgb(45, 253, 249) 100%)'
+
         }}
       >
-        <Box
-          display={{
-            xs: 'none',
-            sm: 'flex'
-          }}
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: '20px',
-            backgroundColor: theme.palette.customColors.bodyBg,
-            height: '100%',
-            minWidth: '50vw'
-          }}
-        >
-          <Image
-            src={theme.palette.mode === 'light' ? RegisterLight : RegisterDark}
-            alt='login image'
-            style={{
-              height: 'auto',
-              width: 'auto'
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+
+        <Box sx={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+          , background: "#fff", padding: "10px", width: "500px", borderRadius: "20px"
+        }}>
           <CssBaseline />
           <Box
             sx={{
@@ -210,7 +191,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomTextField
                       required
-                      
+
                       fullWidth
                       label={t("Email")}
                       onChange={onChange}
@@ -235,12 +216,12 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      
+
                       label={t('Password')}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
-                      placeholder= {t("Enter_password")}
+                      placeholder={t("Enter_password")}
                       error={Boolean(errors?.password)}
                       helperText={errors?.password?.message}
                       type={showPassword ? 'text' : 'password'}
@@ -273,8 +254,8 @@ const RegisterPage: NextPage<TProps> = () => {
                     <CustomTextField
                       required
                       fullWidth
-                      
-                      label= {t('Confirm_password')}
+
+                      label={t('Confirm_password')}
                       onChange={onChange}
                       onBlur={onBlur}
                       value={value}
@@ -318,7 +299,7 @@ const RegisterPage: NextPage<TProps> = () => {
               <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                 <IconButton sx={{ color: '#497ce2' }}
-                onClick={handleRegisterFacebook}>
+                  onClick={handleRegisterFacebook}>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     role='img'
@@ -335,7 +316,7 @@ const RegisterPage: NextPage<TProps> = () => {
                   </svg>
                 </IconButton>
                 <IconButton sx={{ color: theme.palette.error.main }}
-                onClick={handleRegisterGoogle}>
+                  onClick={handleRegisterGoogle}>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
                     role='img'

@@ -31,9 +31,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** Config
 import { EMAIL_REG } from 'src/configs/regex'
 
-// ** Images
-import ForgotPasswordDark from '/public/images/forgot-password-dark.png'
-import ForgotPasswordLight from '/public/images/forgot-password-light.png'
 
 // ** Hooks
 import toast from 'react-hot-toast'
@@ -72,7 +69,7 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
   })
 
   const defaultValues: TDefaultValue = {
-    email: 'admin@gmail.com',
+    email: '',
   }
 
   const {
@@ -114,33 +111,16 @@ const ForgotPasswordPage: NextPage<TProps> = () => {
           backgroundColor: theme.palette.background.paper,
           display: 'flex',
           alignItems: 'center',
-          padding: '40px'
+          justifyContent: 'center',
+          padding: '40px',
+          background: 'linear-gradient(135deg, rgb(70, 35, 224) 0%,rgb(45, 253, 249) 100%)'
         }}
       >
-        <Box
-          display={{
-            xs: 'none',
-            sm: 'flex'
-          }}
-          sx={{
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: theme.palette.customColors.bodyBg,
-            height: '100%',
-            minWidth: '50vw'
-          }}
-        >
-          <Image
-            src={theme.palette.mode === 'light' ? ForgotPasswordLight : ForgotPasswordDark}
-            alt='login image'
-            style={{
-              height: 'auto',
-              width: 'auto'
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+
+        <Box sx={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center'
+          , background: "#fff", padding: "10px", width: "500px", borderRadius: "20px"
+        }}>
           <CssBaseline />
           <Box
             sx={{

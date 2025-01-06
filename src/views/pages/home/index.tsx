@@ -186,11 +186,11 @@ const HomePage: NextPage<TProps> = (props) => {
   }
 
   const handleOnchangePagination = (page: number, pageSize: number) => {
-    setPage(page)
-    setPageSize(pageSize)
     if(!firstRender.current) {
       firstRender.current = true
     }
+    setPage(page)
+    setPageSize(pageSize)
   }
 
   console.log("optionTypes", optionTypes)
@@ -209,24 +209,6 @@ const HomePage: NextPage<TProps> = (props) => {
     // }
   }
 
-
-  // const handleFilterProduct = (value: string, type: string) => {
-  //   switch (type) {
-  //     case 'review': {
-  //       setReviewSelected(value)
-  //       break
-  //     }
-  //     case 'location': {
-  //       setLocationSelected(value)
-  //       break
-  //     }
-  //   }
-  // }
-
-  // const handleResetFilter = () => {
-  //   setLocationSelected('')
-  //   setReviewSelected('')
-  // }
 
   useEffect(()=>{
       if(productTypesServer){
@@ -255,37 +237,29 @@ const HomePage: NextPage<TProps> = (props) => {
   //     })
   // }
 
-  // const fetchAllCities = async () => {
-  //   setLoading(true)
-  //   await getAllCities({ params: { limit: -1, page: -1 } })
-  //     .then(res => {
-  //       const data = res?.data.cities
-  //       if (data) {
-  //         setOptionCities(data?.map((item: { name: string; _id: string }) => ({ label: item.name, value: item._id })))
-  //       }
-  //       setLoading(false)
-  //     })
-  //     .catch(e => {
-  //       setLoading(false)
-  //     })
-  // }
 
   useEffect(() => {
-    // fetchAllTypes()    sửa
+    // fetchAllTypes()   
     // fetchAllCities()
     // handleGetListProducts()
 
   }, [])
 
   useEffect(() => {
-    const selectedType = dataProductType.find((item) => item.slug === category)
-    // console.log("seee", selectedType)
-    setProductTypeId(selectedType?._id)
-    setNameProductType(selectedType?.name)
+    if(category){
+    const selectedType = dataProductType.find((item) => item.value === category)
+    console.log("seee", selectedType)
+    setProductTypeId(selectedType?.id)
+    setNameProductType(selectedType?.label)
+    if(!firstRender.current) {
+      firstRender.current = true
+    }
+    }
+
 
   }, [category])
 
-  console.log("type", productTypeId)
+  console.log("mmm", productTypeId)
 
   useEffect(() => {
     if (!isServerRendered.current && paramsServer && totalCount && !!products.length && !!productTypesServer.length) {
@@ -311,7 +285,7 @@ const HomePage: NextPage<TProps> = (props) => {
     handleGetListProducts()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortBy, searchBy, page, pageSize, filterBy, productTypeId])
+  }, [sortBy, searchBy, page, pageSize, productTypeId])
 
   // useEffect(() => {
   //   if (firstRender.current) {
@@ -490,7 +464,11 @@ const HomePage: NextPage<TProps> = (props) => {
             <CustomSelect
               fullWidth
               onChange={(e) => {
+                if(!firstRender.current) {
+                  firstRender.current = true
+                }
                 setSortBy(e.target.value as string)
+                
               }}
               value={sortBy}
               options={[
@@ -518,7 +496,15 @@ const HomePage: NextPage<TProps> = (props) => {
             <InputSearch
               placeholder={t('Search_name_product')}
               value={searchBy}
-              onChangeSearch={(value: string) => setSearchBy(value)}
+              onChangeSearch={(value: string) => {
+                if(value !==""){
+                  console.log("chayvao")
+                  if(!firstRender.current) {
+                    firstRender.current = true
+                  }
+                }
+                setSearchBy(value)
+              }}
             />
           </Box>
         </Box>
