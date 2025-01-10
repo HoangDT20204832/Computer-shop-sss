@@ -1,3 +1,4 @@
+
 // ** Next
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
@@ -78,6 +79,9 @@ const DetailsProductPage: NextPage<TProps> = ({productData, productsRelated}) =>
     data: [],
     total: 0
   })
+
+  console.log("list,",productsRelated)
+  console.log("listPro,",listRelatedProduct)
 
   const [amountProduct, setAmountProduct] = useState(1)
 
@@ -360,11 +364,11 @@ const DetailsProductPage: NextPage<TProps> = ({productData, productsRelated}) =>
     }
   },[productData])
 
-  useEffect(() => {
-    if(productsRelated.length > 0) {
-      setRelatedProduct(productsRelated)
-    }
-  }, [productsRelated])
+  // useEffect(() => {
+  //   if(productsRelated) {
+  //     setRelatedProduct(productsRelated)
+  //   }
+  // }, [productsRelated])
 
   useEffect(() => {
     if (dataProduct._id) {
@@ -924,29 +928,36 @@ const DetailsProductPage: NextPage<TProps> = ({productData, productsRelated}) =>
                     mt: 4
                   }}
                 >
-                  {loading ? (
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                      {Array.from({ length: 6 }).map((_, index) => {
-                        return (
-                          <CardSkeletonRelated key={index} />
-                        )
-                      })}
-                    </Box>
-                  ) : (
-                    <>
-                      {listRelatedProduct.length > 0 ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-                          {listRelatedProduct.map(item => {
-                            return <CardRelatedProduct key={item._id} item={item} />
-                          })}
-                        </Box>
-                      ) : (
-                        <Box sx={{ width: '100%', mt: 10 }}>
-                          <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
-                        </Box>
-                      )}
-                    </>
-                  )}
+    {loading ? (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {Array.from({ length: 2 }).map((_, index) => {
+          return <CardSkeletonRelated key={index} />
+        })}
+      </Box>
+    ) : (
+      productsRelated.length > 0 ? (
+        <Box
+          sx={{
+            maxHeight: '600px',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 2,
+            position: 'relative'
+          }}
+        >
+          {productsRelated.map((item) => (
+            <Box key={item._id} sx={{ margin: "0 10px" }}>
+              <CardRelatedProduct item={item} />
+            </Box>
+          ))}
+        </Box>
+      ) : (
+        <Box sx={{ width: '100%', mt: 10 }}>
+          <NoData widthImage='60px' heightImage='60px' textNodata={t('No_product')} />
+        </Box>
+      )
+    )}
 
                 </Box>
               </Box>

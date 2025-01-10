@@ -42,6 +42,7 @@ const StyleCard = styled(Card)(({ theme }) => ({
 const CardRelatedProduct = (props: TCardRelatedProduct) => {
   // ** Props
   const { item } = props
+  console.log("Card related product", item)
 
   // ** Hooks
   const { t } = useTranslation()

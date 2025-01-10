@@ -247,14 +247,14 @@ const HomePage: NextPage<TProps> = (props) => {
 
   useEffect(() => {
     if(category){
+    if(!firstRender.current) {
+      firstRender.current = true
+    }
+    } 
     const selectedType = dataProductType.find((item) => item.value === category)
     console.log("seee", selectedType)
     setProductTypeId(selectedType?.id)
     setNameProductType(selectedType?.label)
-    if(!firstRender.current) {
-      firstRender.current = true
-    }
-    }
 
 
   }, [category])
