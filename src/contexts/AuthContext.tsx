@@ -221,8 +221,8 @@ const AuthProvider = ({ children }: Props) => {
     setLoading,
     login: handleLogin,
     logout: handleLogout,
-    loginGoogle: handleLoginGoogle,
-    loginFacebook: handleLoginFacebook
+    // loginGoogle: handleLoginGoogle,
+    // loginFacebook: handleLoginFacebook
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

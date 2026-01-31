@@ -55,6 +55,6 @@ export type AuthValuesType = {
   setLoading: (value: boolean) => void
   setUser: (value: UserDataType | null) => void
   login: (params: LoginParams, errorCallback?: ErrCallbackType) => void
-  loginGoogle: (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => void
-  loginFacebook: (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => void
+  // loginGoogle: (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => void
+  // loginFacebook: (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => void
 }
