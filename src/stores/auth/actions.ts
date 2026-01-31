@@ -3,8 +3,8 @@ import {
   changePasswordMe,
   forgotPasswordAuth,
   registerAuth,
-  registerAuthFacebook,
-  registerAuthGoogle,
+  // registerAuthFacebook,
+  // registerAuthGoogle,
   resetPasswordAuth,
   updateAuthMe
 } from 'src/services/auth'
