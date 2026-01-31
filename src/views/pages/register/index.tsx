@@ -32,13 +32,16 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { EMAIL_REG, PASSWORD_REG } from 'src/configs/regex'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { registerAuthAsync, registerAuthFacebookAsync, registerAuthGoogleAsync } from 'src/stores/auth/actions'
+import { registerAuthAsync } from 'src/stores/auth/actions'
+// COMMENTED: Social registration temporarily disabled
+// import { registerAuthAsync, registerAuthFacebookAsync, registerAuthGoogleAsync } from 'src/stores/auth/actions'
 import { AppDispatch, RootState } from 'src/stores'
 import toast from 'react-hot-toast'
 import FallbackSpinner from 'src/components/fall-back'
 import { resetInitialState } from 'src/stores/auth'
 import { useRouter } from 'next/router'
-import { useSession, signIn, signOut } from "next-auth/react"
+// COMMENTED: Social registration temporarily disabled
+// import { useSession, signIn, signOut } from "next-auth/react"
 import { ROUTE_CONFIG } from 'src/configs/route'
 import { useTranslation } from 'react-i18next'
 import { clearLocalPreTokenAuthSocial, getLocalPreTokenAuthSocial, setLocalPreTokenAuthSocial } from 'src/helpers/storage'
@@ -55,7 +58,8 @@ const RegisterPage: NextPage<TProps> = () => {
   // State
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const prevTokenLocal = getLocalPreTokenAuthSocial()
+  // COMMENTED: Social registration temporarily disabled
+  // const prevTokenLocal = getLocalPreTokenAuthSocial()
 
   // ** Router
   const router = useRouter()
@@ -70,8 +74,9 @@ const RegisterPage: NextPage<TProps> = () => {
   //useTranlate
   const { t } = useTranslation()
 
-  const { data: session, ...restsss } = useSession()
-  console.log("restsss", { restsss, session })
+  // COMMENTED: Social registration temporarily disabled
+  // const { data: session, ...restsss } = useSession()
+  // console.log("restsss", { restsss, session })
 
   const schema = yup.object().shape({
     email: yup.string().required(t('required_field')).matches(EMAIL_REG, t("Rules_email")),
@@ -110,27 +115,28 @@ const RegisterPage: NextPage<TProps> = () => {
     }
   }
 
+  // COMMENTED: Google/Facebook registration temporarily disabled due to API billing issues
+  // const handleRegisterGoogle = async () => {
+  //   signIn("google")            // hàm này sẽ client sẽ gửi signIn lên cho Google để nó tar về thông tin user
+  //   // như: name, avatar, accesstoke,...
+  //   clearLocalPreTokenAuthSocial()
+  // }
 
-  const handleRegisterGoogle = async () => {
-    signIn("google")            // hàm này sẽ client sẽ gửi signIn lên cho Google để nó tar về thông tin user
-    // như: name, avatar, accesstoke,...
-    clearLocalPreTokenAuthSocial()
-  }
-
-  const handleRegisterFacebook = () => {
-    signIn("facebook")
-    clearLocalPreTokenAuthSocial()
-  }
-  useEffect(() => {
-    if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
-      if ((session as any)?.provider === "facebook") {
-        dispatch(registerAuthFacebookAsync((session as any)?.accessToken))
-      } else {
-        dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
-      }
-      setLocalPreTokenAuthSocial((session as any)?.accessToken)
-    }
-  }, [(session as any)?.accessToken])
+  // const handleRegisterFacebook = () => {
+  //   signIn("facebook")
+  //   clearLocalPreTokenAuthSocial()
+  // }
+  
+  // useEffect(() => {
+  //   if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
+  //     if ((session as any)?.provider === "facebook") {
+  //       dispatch(registerAuthFacebookAsync((session as any)?.accessToken))
+  //     } else {
+  //       dispatch(registerAuthGoogleAsync((session as any)?.accessToken))
+  //     }
+  //     setLocalPreTokenAuthSocial((session as any)?.accessToken)
+  //   }
+  // }, [(session as any)?.accessToken])
 
 
   useEffect(() => {
@@ -296,7 +302,8 @@ const RegisterPage: NextPage<TProps> = () => {
                   {t('Login')}
                 </Link>
               </Box>
-              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
+              {/* COMMENTED: Google/Facebook registration temporarily disabled due to API billing issues */}
+              {/* <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                 <IconButton sx={{ color: '#497ce2' }}
                   onClick={handleRegisterFacebook}>
@@ -332,7 +339,7 @@ const RegisterPage: NextPage<TProps> = () => {
                     ></path>
                   </svg>
                 </IconButton>
-              </Box>
+              </Box> */}
             </form>
           </Box>
         </Box>

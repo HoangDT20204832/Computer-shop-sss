@@ -5,8 +5,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 // ** Axios Imports
 import axios from 'axios'
 import { changePasswordMeAsync, forgotPasswordAuthAsync,
-   registerAuthAsync, registerAuthFacebookAsync, 
-   registerAuthGoogleAsync, resetPasswordAuthAsync, 
+   registerAuthAsync, 
+   // COMMENTED: Social registration temporarily disabled
+   // registerAuthFacebookAsync, 
+   // registerAuthGoogleAsync, 
+   resetPasswordAuthAsync, 
    serviceName, updateAuthMeAsync } from 'src/stores/auth/actions'
 import { UserDataType } from 'src/contexts/types'
 
@@ -112,44 +115,45 @@ export const authSlice = createSlice({
         state.typeError = ''
       })
 
+    // COMMENTED: Google/Facebook registration temporarily disabled due to API billing issues
     // ** register with Google
-    builder.addCase(registerAuthGoogleAsync.pending, (state, action) => {
-      state.isLoading = true
-    })
-    builder.addCase(registerAuthGoogleAsync.fulfilled, (state, action) => {
-      console.log("action", {action})
-      state.isLoading = false
-      state.isSuccess = !!action.payload?.data?.email
-      state.isError = !action.payload?.data?.email
-      state.message = action.payload?.message
-      state.typeError = action.payload?.typeError
-    })
-    builder.addCase(registerAuthGoogleAsync.rejected, (state, action) => {
-      state.isLoading = false
-      state.isSuccess = false
-      state.isError = true
-      state.message = ''
-      state.typeError = ''
-    })
+    // builder.addCase(registerAuthGoogleAsync.pending, (state, action) => {
+    //   state.isLoading = true
+    // })
+    // builder.addCase(registerAuthGoogleAsync.fulfilled, (state, action) => {
+    //   console.log("action", {action})
+    //   state.isLoading = false
+    //   state.isSuccess = !!action.payload?.data?.email
+    //   state.isError = !action.payload?.data?.email
+    //   state.message = action.payload?.message
+    //   state.typeError = action.payload?.typeError
+    // })
+    // builder.addCase(registerAuthGoogleAsync.rejected, (state, action) => {
+    //   state.isLoading = false
+    //   state.isSuccess = false
+    //   state.isError = true
+    //   state.message = ''
+    //   state.typeError = ''
+    // })
 
-     // ** register with facebook
-     builder.addCase(registerAuthFacebookAsync.pending, (state, action) => {
-      state.isLoading = true
-    })
-    builder.addCase(registerAuthFacebookAsync.fulfilled, (state, action) => {
-      state.isLoading = false
-      state.isSuccess = !!action.payload?.data?.email
-      state.isError = !action.payload?.data?.email
-      state.message = action.payload?.message
-      state.typeError = action.payload?.typeError
-    })
-    builder.addCase(registerAuthFacebookAsync.rejected, (state, action) => {
-      state.isLoading = false
-      state.isSuccess = false
-      state.isError = true
-      state.message = ''
-      state.typeError = ''
-    })
+    //  // ** register with facebook
+    //  builder.addCase(registerAuthFacebookAsync.pending, (state, action) => {
+    //   state.isLoading = true
+    // })
+    // builder.addCase(registerAuthFacebookAsync.fulfilled, (state, action) => {
+    //   state.isLoading = false
+    //   state.isSuccess = !!action.payload?.data?.email
+    //   state.isError = !action.payload?.data?.email
+    //   state.message = action.payload?.message
+    //   state.typeError = action.payload?.typeError
+    // })
+    // builder.addCase(registerAuthFacebookAsync.rejected, (state, action) => {
+    //   state.isLoading = false
+    //   state.isSuccess = false
+    //   state.isError = true
+    //   state.message = ''
+    //   state.typeError = ''
+    // })
 
 
     // ** Update-me

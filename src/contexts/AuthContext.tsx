@@ -16,7 +16,9 @@ import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType,LoginGoogleP
  } from './types'
 
 // ** Services
-import { loginAuth, loginAuthGoogle,loginAuthFacebook, logoutAuth } from 'src/services/auth'
+import { loginAuth, logoutAuth } from 'src/services/auth'
+// COMMENTED: Google/Facebook login temporarily disabled
+// import { loginAuth, loginAuthGoogle,loginAuthFacebook, logoutAuth } from 'src/services/auth'
 
 // ** Configs
 import { API_ENDPOINT } from 'src/configs/api'
@@ -40,8 +42,9 @@ const defaultProvider: AuthValuesType = {
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  loginGoogle: () => Promise.resolve(),
-  loginFacebook: () => Promise.resolve()
+  // COMMENTED: Google/Facebook login temporarily disabled
+  // loginGoogle: () => Promise.resolve(),
+  // loginFacebook: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -135,43 +138,54 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   const handleLoginGoogle = (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => {
-    loginAuthGoogle({idToken: params.idToken, deviceToken: params.deviceToken})
-      .then(async response => {
-        if (params.rememberMe) {
-          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
-        } else {
-          setTemporaryToken(response.data.access_token)
-        }
-        toast.success(t('Login_success'))
-        const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.user })
-        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        router.replace(redirectURL as string)
-      })
-      .catch(err => {
-        if (errorCallback) errorCallback(err)
-      })
+    console.warn('Google login is temporarily disabled')
+    if (errorCallback) errorCallback({ message: 'Social login temporarily disabled' } as any)
   }
 
   const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
-    loginAuthFacebook({idToken: params.idToken, deviceToken: params.deviceToken})
-      .then(async response => {
-        if (params.rememberMe) {
-          setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
-        } else {
-          setTemporaryToken(response.data.access_token)
-        }
-        toast.success(t('Login_success'))
-        const returnUrl = router.query.returnUrl
-        setUser({ ...response.data.user })
-        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-        console.log("redirectURL",{redirectURL})
-        router.replace(redirectURL as string)
-      })
-      .catch(err => {
-        if (errorCallback) errorCallback(err)
-      })
+    console.warn('Facebook login is temporarily disabled')
+    if (errorCallback) errorCallback({ message: 'Social login temporarily disabled' } as any)
   }
+
+  // COMMENTED: Google/Facebook login temporarily disabled due to API billing issues
+  // const handleLoginGoogle = (params: LoginGoogleParams, errorCallback?: ErrCallbackType) => {
+  //   loginAuthGoogle({idToken: params.idToken, deviceToken: params.deviceToken})
+  //     .then(async response => {
+  //       if (params.rememberMe) {
+  //         setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+  //       } else {
+  //         setTemporaryToken(response.data.access_token)
+  //       }
+  //       toast.success(t('Login_success'))
+  //       const returnUrl = router.query.returnUrl
+  //       setUser({ ...response.data.user })
+  //       const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+  //       router.replace(redirectURL as string)
+  //     })
+  //     .catch(err => {
+  //       if (errorCallback) errorCallback(err)
+  //     })
+  // }
+
+  // const handleLoginFacebook = (params: LoginFacebookParams, errorCallback?: ErrCallbackType) => {
+  //   loginAuthFacebook({idToken: params.idToken, deviceToken: params.deviceToken})
+  //     .then(async response => {
+  //       if (params.rememberMe) {
+  //         setLocalUserData(JSON.stringify(response.data.user), response.data.access_token, response.data.refresh_token)
+  //       } else {
+  //         setTemporaryToken(response.data.access_token)
+  //       }
+  //       toast.success(t('Login_success'))
+  //       const returnUrl = router.query.returnUrl
+  //       setUser({ ...response.data.user })
+  //       const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+  //       console.log("redirectURL",{redirectURL})
+  //       router.replace(redirectURL as string)
+  //     })
+  //     .catch(err => {
+  //       if (errorCallback) errorCallback(err)
+  //     })
+  // }
 
 
   const handleLogout = () => {

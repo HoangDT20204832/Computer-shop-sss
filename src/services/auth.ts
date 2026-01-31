@@ -37,17 +37,19 @@ export const logoutAuth = async () => {
  
 //   return res.data
 // }
-export const loginAuthGoogle = async (data: {idToken: string, deviceToken?:string}) => {
-  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, data)
 
-  return res.data
-}
+// COMMENTED: Google/Facebook login temporarily disabled due to API billing issues
+// export const loginAuthGoogle = async (data: {idToken: string, deviceToken?:string}) => {
+//   const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-google`, data)
 
-export const loginAuthFacebook = async (data: {idToken: string, deviceToken?:string}) => {
-  const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, data)
+//   return res.data
+// }
 
-  return res.data
-}
+// export const loginAuthFacebook = async (data: {idToken: string, deviceToken?:string}) => {
+//   const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/login-facebook`, data)
+
+//   return res.data
+// }
 
 export const updateDeviceToken = async (data: {deviceToken:string}) => {
   const res = await instanceAxios.post(`${API_ENDPOINT.AUTH.INDEX}/update-device`, data)
@@ -65,27 +67,28 @@ export const registerAuth = async (data: TRegisterAuth) => {
   }
 }
 
-export const registerAuthGoogle = async (idToken: string) => {
-  try {
-    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-google`, { idToken })
+// COMMENTED: Google/Facebook registration temporarily disabled due to API billing issues
+// export const registerAuthGoogle = async (idToken: string) => {
+//   try {
+//     const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-google`, { idToken })
     
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
+//     return res.data
+//   } catch (error) {
+//     return error
+//   }
+// }
 
 
 
-export const registerAuthFacebook = async (idToken: string) => {
-  try {
-    const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-facebook`, { idToken })
+// export const registerAuthFacebook = async (idToken: string) => {
+//   try {
+//     const res = await axios.post(`${API_ENDPOINT.AUTH.INDEX}/register-facebook`, { idToken })
    
-    return res.data
-  } catch (error) {
-    return error
-  }
-}
+//     return res.data
+//   } catch (error) {
+//     return error
+//   }
+// }
 export const updateAuthMe = async (data: any) => {
   try {
     const res = await instanceAxios.put(`${API_ENDPOINT.AUTH.INDEX}/me`, data)

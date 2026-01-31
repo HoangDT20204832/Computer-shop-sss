@@ -33,7 +33,8 @@ import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
-import { signIn, useSession } from 'next-auth/react'
+// COMMENTED: Social login temporarily disabled
+// import { signIn, useSession } from 'next-auth/react'
 import {
   clearLocalPreTokenAuthSocial, getLocalDeviceToken, getLocalPreTokenAuthSocial,
   getLocalRememberLoginAuthSocial, setLocalPreTokenAuthSocial,
@@ -52,7 +53,8 @@ const LoginPage: NextPage<TProps> = () => {
   //State
   const [showPassword, setShowPassword] = useState<boolean>(false)
   const [isRemember, setIsRemember] = useState<boolean>(true)
-  const prevTokenLocal = getLocalPreTokenAuthSocial() // prevTokenLocal là accessToken do google cung cấp(trả về) khi client ấn signIn
+  // COMMENTED: Social login temporarily disabled
+  // const prevTokenLocal = getLocalPreTokenAuthSocial() // prevTokenLocal là accessToken do google cung cấp(trả về) khi client ấn signIn
   // ** Language
   const { t } = useTranslation()
 
@@ -61,10 +63,13 @@ const LoginPage: NextPage<TProps> = () => {
 
   // console.log('thembfskje', theme)
 
-  const { login, loginGoogle, loginFacebook } = useAuth() //lấy login: handleLogin từ AuthContext thoogn qua hàm useAuth ở folder hooks
+  const { login } = useAuth() //lấy login: handleLogin từ AuthContext thoogn qua hàm useAuth ở folder hooks
+  // COMMENTED: Social login temporarily disabled
+  // const { login, loginGoogle, loginFacebook } = useAuth()
 
-  const { data: session } = useSession()
-  console.log("session", { session, status })
+  // COMMENTED: Social login temporarily disabled
+  // const { data: session } = useSession()
+  // console.log("session", { session, status })
 
   const { fcmToken } = useFcmToken(); // lấy token của thiết bị đang đăng nhập vào website ra
 
@@ -99,41 +104,43 @@ const LoginPage: NextPage<TProps> = () => {
     }
   }
 
-  const handleLoginGoogle = () => {
-    signIn("google")    // khi gọi hàm này thì client sẽ signIn lên google và google sẽ trả về thông tin user như
-    // name, avatar,....., accesstoken 
-    clearLocalPreTokenAuthSocial()  // xoá accessTokenGoogle của google or facebook cấp cho ở trên localTrogate
-    // để khi ấn đăng nhập bằng  google thì (session as any)?.accessToken thay đổi =>  re-render lại componet
-    //=> gán lại  cho  prevTokenLocal =0 
-    // rồi chạy đến hàm usffect (session as any)?.accessToken !== prevTokenLocal(đúng do prevTokenLocal=0)
-    //=> nó sẽ thực hiên luôn chức năng login
-    //()
-  }
-  const handleLoginFacebook = () => {
-    signIn("facebook")
-    clearLocalPreTokenAuthSocial()
-  }
+  // COMMENTED: Google/Facebook login temporarily disabled due to API billing issues
+  // const handleLoginGoogle = () => {
+  //   signIn("google")    // khi gọi hàm này thì client sẽ signIn lên google và google sẽ trả về thông tin user như
+  //   // name, avatar,....., accesstoken 
+  //   clearLocalPreTokenAuthSocial()  // xoá accessTokenGoogle của google or facebook cấp cho ở trên localTrogate
+  //   // để khi ấn đăng nhập bằng  google thì (session as any)?.accessToken thay đổi =>  re-render lại componet
+  //   //=> gán lại  cho  prevTokenLocal =0 
+  //   // rồi chạy đến hàm usffect (session as any)?.accessToken !== prevTokenLocal(đúng do prevTokenLocal=0)
+  //   //=> nó sẽ thực hiên luôn chức năng login
+  //   //()
+  // }
+  // const handleLoginFacebook = () => {
+  //   signIn("facebook")
+  //   clearLocalPreTokenAuthSocial()
+  // }
 
-  useEffect(() => {
-    if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
-      const rememberLocal = getLocalRememberLoginAuthSocial()
-      const deviceToken = getLocalDeviceToken()
-      if ((session as any)?.provider === "facebook") {
-        loginFacebook({ idToken: (session as any)?.accessToken, rememberMe: rememberLocal ? rememberLocal === "true" : true, deviceToken: deviceToken ? deviceToken : "" }, err => {
-          if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
-        })
-      } else {
-        loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: rememberLocal ? rememberLocal === "true" : true, deviceToken: deviceToken ? deviceToken : "" }, err => {
-          if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
-        })
-      }
-      setLocalPreTokenAuthSocial((session as any)?.accessToken)
-    }
-  }, [(session as any)?.accessToken])
+  // useEffect(() => {
+  //   if ((session as any)?.accessToken && (session as any)?.accessToken !== prevTokenLocal) {
+  //     const rememberLocal = getLocalRememberLoginAuthSocial()
+  //     const deviceToken = getLocalDeviceToken()
+  //     if ((session as any)?.provider === "facebook") {
+  //       loginFacebook({ idToken: (session as any)?.accessToken, rememberMe: rememberLocal ? rememberLocal === "true" : true, deviceToken: deviceToken ? deviceToken : "" }, err => {
+  //         if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
+  //       })
+  //     } else {
+  //       loginGoogle({ idToken: (session as any)?.accessToken, rememberMe: rememberLocal ? rememberLocal === "true" : true, deviceToken: deviceToken ? deviceToken : "" }, err => {
+  //         if (err?.response?.data?.typeError === 'INVALID') toast.error(t('The_email_or_password_wrong'))
+  //       })
+  //     }
+  //     setLocalPreTokenAuthSocial((session as any)?.accessToken)
+  //   }
+  // }, [(session as any)?.accessToken])
 
   return (
     <>
-      {status === "loading" && <FallbackSpinner />}
+      {/* COMMENTED: Social login temporarily disabled */}
+      {/* {status === "loading" && <FallbackSpinner />} */}
       <Box
         sx={{
           height: '100vh',
@@ -260,7 +267,8 @@ const LoginPage: NextPage<TProps> = () => {
                   </Link>
                 </Grid>
               </Grid>
-              <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
+              {/* COMMENTED: Google/Facebook login temporarily disabled due to API billing issues */}
+              {/* <Typography sx={{ textAlign: 'center', mt: 2, mb: 2 }}>Or</Typography>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                 <IconButton sx={{ color: '#497ce2' }}
                   onClick={handleLoginFacebook}>
@@ -296,7 +304,7 @@ const LoginPage: NextPage<TProps> = () => {
                     ></path>
                   </svg>
                 </IconButton>
-              </Box>
+              </Box> */}
             </form>
           </Box>
         </Box>

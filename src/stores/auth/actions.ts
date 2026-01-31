@@ -34,32 +34,33 @@ export const registerAuthAsync = createAsyncThunk(
   }
 )
 
-export const registerAuthGoogleAsync = createAsyncThunk(`${serviceName}/register-google`, async (idToken: string) => {
-  const response = await registerAuthGoogle(idToken)
+// COMMENTED: Google/Facebook registration temporarily disabled due to API billing issues
+// export const registerAuthGoogleAsync = createAsyncThunk(`${serviceName}/register-google`, async (idToken: string) => {
+//   const response = await registerAuthGoogle(idToken)
 
-  if (response?.data) {
-    return response
-  }
+//   if (response?.data) {
+//     return response
+//   }
 
-  return {
-    data: null,
-    message: response?.response?.data?.message,
-    typeError: response?.response?.data?.typeError
-  }
-})
+//   return {
+//     data: null,
+//     message: response?.response?.data?.message,
+//     typeError: response?.response?.data?.typeError
+//   }
+// })
 
-export const registerAuthFacebookAsync = createAsyncThunk(`${serviceName}/register-facebook`, async (idToken: string) => {
-  const response = await registerAuthFacebook(idToken)
-  if (response?.data) {
-    return response
-  }
+// export const registerAuthFacebookAsync = createAsyncThunk(`${serviceName}/register-facebook`, async (idToken: string) => {
+//   const response = await registerAuthFacebook(idToken)
+//   if (response?.data) {
+//     return response
+//   }
   
-  return {
-    data: null,
-    message: response?.response?.data?.message,
-    typeError: response?.response?.data?.typeError
-  }
-})
+//   return {
+//     data: null,
+//     message: response?.response?.data?.message,
+//     typeError: response?.response?.data?.typeError
+//   }
+// })
 
 export const updateAuthMeAsync = createAsyncThunk(
   // dùng redux think để xử lý bất đồng bộ
